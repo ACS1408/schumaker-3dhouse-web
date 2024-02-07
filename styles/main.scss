@@ -1,0 +1,10 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.ff-gotham {
+    font-family: var(--ff-gotham);
+}
+.ff-chronicle-display {
+    font-family: var(--ff-chronicle-display);
+}
