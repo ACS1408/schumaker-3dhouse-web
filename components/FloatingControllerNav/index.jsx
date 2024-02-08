@@ -1,7 +1,12 @@
 import Image from "next/image";
 import React from "react";
 
-const FloatingControllerNav = ({ openSettingsModal, takeSnapShot }) => {
+const FloatingControllerNav = ({
+  openSettingsModal,
+  openWallTextureModal,
+  openRugTextureModal,
+  takeSnapShot,
+}) => {
   const nav = {
     default:
       "bg-[#2d2d2d1a] backdrop-blur-sm border border-[#FCFBF6] rounded-xl flex justify-center fixed bottom-6 left-1/2 -translate-x-1/2",
@@ -42,7 +47,10 @@ const FloatingControllerNav = ({ openSettingsModal, takeSnapShot }) => {
         <div
           className={`item-wrap ${nav.item_wrap.default} ${nav.item_wrap.before}`}
         >
-          <button className={`item ${nav.item.default} ${nav.item.hover}`}>
+          <button
+            className={`item ${nav.item.default} ${nav.item.hover}`}
+            onClick={openWallTextureModal}
+          >
             <Image
               src="/icons/icon-wallpaper.svg"
               width={32}
@@ -50,7 +58,10 @@ const FloatingControllerNav = ({ openSettingsModal, takeSnapShot }) => {
               alt="icon-settings"
             />
           </button>
-          <button className={`item ${nav.item.default} ${nav.item.hover}`}>
+          <button
+            className={`item ${nav.item.default} ${nav.item.hover}`}
+            onClick={openRugTextureModal}
+          >
             <Image
               src="/icons/icon-rug.svg"
               width={32}

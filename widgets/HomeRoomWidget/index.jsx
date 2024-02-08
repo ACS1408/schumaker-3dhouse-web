@@ -1,56 +1,29 @@
 "use client";
-import React, { Suspense, useEffect, useState } from "react";
+import React, { Suspense } from "react";
 import Image from "next/image";
 import FloatingControllerNav from "@/components/FloatingControllerNav";
 import { Canvas } from "@react-three/fiber";
 import Scene from "../Scene";
 import SettingsModal from "@/components/SettingsModal";
-import { saveAs } from "file-saver";
+import useHomeRoomWidget from "./useHomeRoomWidget";
+import WallTexturesModal from "@/components/WallTexturesModal";
+import RugTexturesModal from "@/components/RugTexturesModal";
 
 const HomeRoomWidget = () => {
-  let [isSettingsMenuOpen, setIsSettingsMenuOpen] = useState(false);
-  const [threeContext, setThreeContext] = useState({});
-
-  const takeSnapShot = () => {
-    const { gl, scene, camera } = threeContext;
-    gl.render(scene, camera);
-    const screenshot = gl.domElement.toDataURL();
-    const date = new Date();
-    const fileName = `output-${date.getFullYear()}${
-      date.getMonth() + 1
-    }${date.getDate()}${date.getHours()}${date.getMinutes()}${date.getSeconds()}.png`;
-    let file = convertBase64ToFile(screenshot, fileName);
-    saveAs(file, fileName);
-  };
-
-  const convertBase64ToFile = (base64String, fileName) => {
-    let arr = base64String.split(",");
-    let mime = arr[0].match(/:(.*?);/)[1];
-    let bstr = atob(arr[1]);
-    let n = bstr.length;
-    let uint8Array = new Uint8Array(n);
-    while (n--) {
-      uint8Array[n] = bstr.charCodeAt(n);
-    }
-    let file = new File([uint8Array], fileName, { type: mime });
-    return file;
-  };
-
-  const closeSettingsModal = () => {
-    setIsSettingsMenuOpen(false);
-  };
-
-  const openSettingsModal = () => {
-    setIsSettingsMenuOpen(true);
-  };
-  useEffect(() => {
-    if (isSettingsMenuOpen) {
-      setTimeout(() => {
-        document.querySelector(".home-room-widget").removeAttribute("inert");
-      }, 300);
-    }
-  }, [isSettingsMenuOpen]);
-
+  const {
+    takeSnapShot,
+    closeSettingsModal,
+    openSettingsModal,
+    isSettingsMenuOpen,
+    setThreeContext,
+    openWallTextureModal,
+    closeWallTextureModal,
+    isWallTextureModalOpen,
+    openRugTextureModal,
+    closeRugTextureModal,
+    isRugTextureModalOpen,
+    setIsRugTextureModalOpen,
+  } = useHomeRoomWidget();
   return (
     <main className="home-room-widget w-full h-svh bg-black">
       <div className="flex justify-center py-7 z-10 relative">
@@ -75,8 +48,20 @@ const HomeRoomWidget = () => {
         openSettingsModal={openSettingsModal}
         closeSettingsModal={closeSettingsModal}
       />
+      <WallTexturesModal
+        isWallTextureModalOpen={isWallTextureModalOpen}
+        openWallTextureModal={openWallTextureModal}
+        closeWallTextureModal={closeWallTextureModal}
+      />
+      <RugTexturesModal
+        isRugTextureModalOpen={isRugTextureModalOpen}
+        openRugTextureModal={openRugTextureModal}
+        closeRugTextureModal={closeRugTextureModal}
+      />
       <FloatingControllerNav
         openSettingsModal={openSettingsModal}
+        openWallTextureModal={openWallTextureModal}
+        openRugTextureModal={openRugTextureModal}
         takeSnapShot={takeSnapShot}
       />
     </main>
