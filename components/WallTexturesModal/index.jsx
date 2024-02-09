@@ -12,6 +12,14 @@ const WallTexturesModal = ({
 }) => {
   const [selectedTexture, setSelectedTexture] = useRecoilState(textureState);
 
+  useEffect(() => {
+    console.log(
+      selectedTexture?.wall,
+      textures[0],
+      "selected",
+      selectedTexture?.wall === textures[0]
+    );
+  }, [selectedTexture]);
   return (
     <ModalContainer
       title="Choose your wallcovering"
@@ -27,9 +35,9 @@ const WallTexturesModal = ({
               <figure
                 className={`${
                   selectedTexture?.wall === texture
-                    ? "border border-[#fad915] p-1"
+                    ? "border border-[#333] p-1.5"
                     : ""
-                } texture-item cursor-pointer`}
+                } texture-item cursor-pointer transition-all duration-300 ease-out`}
                 key={i}
                 onClick={() =>
                   setSelectedTexture((prevState) => ({

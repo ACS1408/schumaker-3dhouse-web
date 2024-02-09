@@ -5,6 +5,8 @@ const FloatingControllerNav = ({
   openSettingsModal,
   openWallTextureModal,
   openRugTextureModal,
+  openCurtainTextureModal,
+  openUpholsteryTextureModal,
   takeSnapShot,
 }) => {
   const nav = {
@@ -69,7 +71,10 @@ const FloatingControllerNav = ({
               alt="icon-settings"
             />
           </button>
-          <button className={`item ${nav.item.default} ${nav.item.hover}`}>
+          <button
+            className={`item ${nav.item.default} ${nav.item.hover}`}
+            onClick={openCurtainTextureModal}
+          >
             <Image
               src="/icons/icon-curtain.svg"
               width={32}
@@ -77,7 +82,10 @@ const FloatingControllerNav = ({
               alt="icon-settings"
             />
           </button>
-          <button className={`item ${nav.item.default} ${nav.item.hover}`}>
+          <button
+            className={`item ${nav.item.default} ${nav.item.hover}`}
+            onClick={openUpholsteryTextureModal}
+          >
             <Image
               src="/icons/icon-sofa.svg"
               width={32}

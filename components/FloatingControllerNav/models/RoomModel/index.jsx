@@ -1,7 +1,8 @@
 import React, { useRef } from "react";
 import { useGLTF } from "@react-three/drei";
+import { Html } from "@react-three/drei";
 
-export const RoomModel = (props) => {
+export const RoomModel = ({ showAnnotation, ...props }) => {
   const { nodes, materials } = useGLTF("/models/room.glb");
   return (
     <group {...props} dispose={null}>
@@ -129,7 +130,15 @@ export const RoomModel = (props) => {
           position={[4.115, 2.858, -3.149]}
           rotation={[0, Math.PI / 2, 0]}
           scale={[0.058, 0.127, 0.127]}
-        />
+        >
+          <Html position={[0, -5, -25]}>
+            <div
+              className={`${
+                showAnnotation ? "opacity-100 visible" : "opacity-0 invisible"
+              } duration-300 transition-all ease-in-out annotation cursor-pointer`}
+            ></div>
+          </Html>
+        </mesh>
         <mesh
           castShadow
           receiveShadow
@@ -165,7 +174,15 @@ export const RoomModel = (props) => {
           position={[-2.354, 2.602, -1.521]}
           rotation={[-1.801, 1.547, 0.225]}
           scale={0.893}
-        />
+        >
+          <Html position={[-0.6, 0, 0]}>
+            <div
+              className={`${
+                showAnnotation ? "opacity-100 visible" : "opacity-0 invisible"
+              } duration-300 transition-all ease-in-out annotation cursor-pointer`}
+            />
+          </Html>
+        </mesh>
         <mesh
           castShadow
           receiveShadow
@@ -276,7 +293,15 @@ export const RoomModel = (props) => {
           position={[0.896, 0.003, -0.788]}
           rotation={[0, Math.PI / 2, 0]}
           scale={[1.501, 1.451, 1.329]}
-        />
+        >
+          <Html position={[0.25, 0, 0.8]}>
+            <div
+              className={`${
+                showAnnotation ? "opacity-100 visible" : "opacity-0 invisible"
+              } duration-300 transition-all ease-in-out annotation cursor-pointer`}
+            />
+          </Html>
+        </mesh>
       </group>
     </group>
   );

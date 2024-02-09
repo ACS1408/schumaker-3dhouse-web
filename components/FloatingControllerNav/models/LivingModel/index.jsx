@@ -1,7 +1,8 @@
 import React, { useRef } from "react";
 import { useGLTF } from "@react-three/drei";
+import { Html } from "@react-three/drei";
 
-export const LivingModel = (props) => {
+export const LivingModel = ({ showAnnotation, ...props }) => {
   const { nodes, materials } = useGLTF("/models/living.glb");
   return (
     <group {...props} dispose={null}>
@@ -30,7 +31,15 @@ export const LivingModel = (props) => {
             receiveShadow
             geometry={nodes.Object008001.geometry}
             material={materials.Couch}
-          />
+          >
+            <Html position={[-0.35, 0.5, 1]}>
+              <div
+                className={`${
+                  showAnnotation ? "opacity-100 visible" : "opacity-0 invisible"
+                } duration-300 transition-all ease-in-out annotation cursor-pointer`}
+              />
+            </Html>
+          </mesh>
           <mesh
             castShadow
             receiveShadow
@@ -164,7 +173,7 @@ export const LivingModel = (props) => {
             material={materials["Couch Fabric"]}
             position={[-1.37, 2.925, 2.222]}
             scale={[6.947, 11.756, 6.947]}
-          />
+          ></mesh>
         </mesh>
         <mesh
           castShadow
@@ -182,6 +191,13 @@ export const LivingModel = (props) => {
             position={[-0.002, -1.398, 0]}
             scale={8.978}
           />
+          <Html position={[-0.5, -8, 0.5]}>
+            <div
+              className={`${
+                showAnnotation ? "opacity-100 visible" : "opacity-0 invisible"
+              } duration-300 transition-all ease-in-out annotation cursor-pointer`}
+            />
+          </Html>
         </mesh>
         <mesh
           castShadow
@@ -235,6 +251,6 @@ export const LivingModel = (props) => {
       </group>
     </group>
   );
-}
+};
 
 useGLTF.preload("/models/living.glb");

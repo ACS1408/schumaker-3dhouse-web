@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { RoomModel } from "@/components/FloatingControllerNav/models/RoomModel";
 // import { useControls } from "leva";
 import {
@@ -15,6 +15,24 @@ import { useThree } from "@react-three/fiber";
 const Scene = ({ setThreeContext }) => {
   const { gl, scene, camera } = useThree();
   const [roomSetting, setRoomSettings] = useRecoilState(roomSettingState);
+
+  const [showAnnotation, setShowAnnotation] = useState(true);
+  let timeoutId;
+
+  const handleMouseMove = () => {
+    setShowAnnotation(true);
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => {
+      setShowAnnotation(false);
+    }, 1000);
+  };
+
+  useEffect(() => {
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+    };
+  }, []);
 
   useEffect(() => {
     setThreeContext({ gl, scene, camera });
@@ -118,10 +136,14 @@ const Scene = ({ setThreeContext }) => {
         fov={fov}
       /> */}
       <OrbitControls />
-      <RoomModel />
+      <RoomModel showAnnotation={showAnnotation} />
       {roomSetting?.layout?.value === "dining" ? (
         <>
-          <DiningModel scale={0.25} position={[0.25, 0.03, -0.55]} />
+          <DiningModel
+            scale={0.25}
+            position={[0.25, 0.03, -0.55]}
+            showAnnotation={showAnnotation}
+          />
           {/* <DiningModel
             scale={diningScale}
             position={[diningPosX, diningPosY, diningPosZ]}
@@ -133,7 +155,11 @@ const Scene = ({ setThreeContext }) => {
           scale={livingScale}
           position={[livingPosX, livingPosY, livingPosZ]}
         /> */}
-          <LivingModel scale={0.28} position={[0.25, -0.143, -0.43]} />
+          <LivingModel
+            scale={0.28}
+            position={[0.25, -0.143, -0.43]}
+            showAnnotation={showAnnotation}
+          />
         </>
       )}
       <Environment preset="sunset" />

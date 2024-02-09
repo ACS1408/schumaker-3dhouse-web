@@ -1,7 +1,8 @@
 import React, { useRef } from "react";
 import { useGLTF } from "@react-three/drei";
+import { Html } from "@react-three/drei";
 
-export const DiningModel = (props) => {
+export const DiningModel = ({ showAnnotation, ...props }) => {
   const { nodes, materials } = useGLTF("/models/dinning.glb");
   return (
     <group {...props} dispose={null}>
@@ -79,7 +80,15 @@ export const DiningModel = (props) => {
             material={nodes.Bulb_Holder001.material}
             position={[-0.002, -1.398, 0]}
             scale={8.978}
-          />
+          >
+            <Html position={[0, 0, 0]}>
+              <div
+                className={`${
+                  showAnnotation ? "opacity-100 visible" : "opacity-0 invisible"
+                } duration-300 transition-all ease-in-out annotation cursor-pointer`}
+              />
+            </Html>
+          </mesh>
         </mesh>
         <group
           position={[1.286, 0.225, -2.713]}
@@ -393,7 +402,15 @@ export const DiningModel = (props) => {
           material={materials["Material.003"]}
           position={[1.3, 0.363, 0.07]}
           rotation={[-Math.PI, -0.86, -Math.PI]}
-        />
+        >
+          <Html position={[0, 0, 0]}>
+            <div
+              className={`${
+                showAnnotation ? "opacity-100 visible" : "opacity-0 invisible"
+              } duration-300 transition-all ease-in-out annotation cursor-pointer`}
+            />
+          </Html>
+        </mesh>
         <mesh
           castShadow
           receiveShadow

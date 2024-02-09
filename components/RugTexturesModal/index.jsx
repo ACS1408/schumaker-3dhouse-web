@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import ModalContainer from "../ModalContainer";
 import Image from "next/image";
 import { textures } from "@/data/rugTextures";
@@ -23,9 +23,9 @@ const RugTexturesModal = ({ closeRugTextureModal, isRugTextureModalOpen }) => {
               <figure
                 className={`${
                   selectedTexture?.rug === texture
-                    ? "border border-[#fad915] p-1"
+                    ? "border border-[#333] p-1.5"
                     : ""
-                } texture-item cursor-pointer`}
+                } texture-item cursor-pointer transition-all duration-300 ease-out`}
                 key={i}
                 onClick={() =>
                   setSelectedTexture((prevState) => ({

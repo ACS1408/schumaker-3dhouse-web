@@ -5,6 +5,9 @@ const useHomeRoomWidget = () => {
   let [isSettingsMenuOpen, setIsSettingsMenuOpen] = useState(false);
   let [isWallTextureModalOpen, setIsWallTextureModalOpen] = useState(false);
   let [isRugTextureModalOpen, setIsRugTextureModalOpen] = useState(false);
+  let [isCurtainTextureModalOpen, setIsCurtainTextureModalOpen] =
+  useState(false);
+  let [isUpholsteryTextureModalOpen, setIsUpholsteryTextureModalOpen] = useState(false);
   const [threeContext, setThreeContext] = useState({});
 
   const takeSnapShot = () => {
@@ -53,6 +56,20 @@ const useHomeRoomWidget = () => {
     setIsRugTextureModalOpen(true);
   };
 
+  const closeCurtainTextureModal = () => {
+    setIsCurtainTextureModalOpen(false);
+  };
+  const openCurtainTextureModal = () => {
+    setIsCurtainTextureModalOpen(true);
+  };
+
+  const closeUpholsteryTextureModal = () => {
+    setIsUpholsteryTextureModalOpen(false);
+  };
+  const openUpholsteryTextureModal = () => {
+    setIsUpholsteryTextureModalOpen(true);
+  };
+
   useEffect(() => {
     if (isSettingsMenuOpen) {
       setTimeout(() => {
@@ -77,6 +94,14 @@ const useHomeRoomWidget = () => {
     closeRugTextureModal,
     isRugTextureModalOpen,
     setIsRugTextureModalOpen,
+    openCurtainTextureModal,
+    closeCurtainTextureModal,
+    isCurtainTextureModalOpen,
+    setIsCurtainTextureModalOpen,
+    openUpholsteryTextureModal,
+    closeUpholsteryTextureModal,
+    isUpholsteryTextureModalOpen,
+    setIsUpholsteryTextureModalOpen,
   };
 };
 
