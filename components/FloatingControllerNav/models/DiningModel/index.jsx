@@ -1,9 +1,19 @@
 import React, { useRef } from "react";
 import { useGLTF } from "@react-three/drei";
 import { Html } from "@react-three/drei";
+import TitleTooltip from "@/components/TitleTooltip";
+import { useRecoilState } from "recoil";
+import textureState from "@/atoms/textureStates";
+import { useLoader } from "@react-three/fiber";
+import { TextureLoader } from "three";
 
 export const DiningModel = ({ showAnnotation, ...props }) => {
   const { nodes, materials } = useGLTF("/models/dinning.glb");
+  const [currentTexture, setCurrentTexture] = useRecoilState(textureState);
+  const upholsteryTexture = useLoader(
+    TextureLoader,
+    currentTexture?.upholstery?.image
+  );
   return (
     <group {...props} dispose={null}>
       <group position={[-0.553, -1.248, 0.895]} scale={0.631}>
@@ -82,11 +92,15 @@ export const DiningModel = ({ showAnnotation, ...props }) => {
             scale={8.978}
           >
             <Html position={[0, 0, 0]}>
-              <div
-                className={`${
-                  showAnnotation ? "opacity-100 visible" : "opacity-0 invisible"
-                } duration-300 transition-all ease-in-out annotation cursor-pointer`}
-              />
+              <TitleTooltip title="TURN LAMP ON/OFF" orientation="top">
+                <div
+                  className={`${
+                    showAnnotation
+                      ? "opacity-100 visible"
+                      : "opacity-0 invisible"
+                  } duration-300 transition-all ease-in-out annotation cursor-pointer`}
+                />
+              </TitleTooltip>
             </Html>
           </mesh>
         </mesh>
@@ -403,12 +417,15 @@ export const DiningModel = ({ showAnnotation, ...props }) => {
           position={[1.3, 0.363, 0.07]}
           rotation={[-Math.PI, -0.86, -Math.PI]}
         >
+          <meshStandardMaterial map={upholsteryTexture} />
           <Html position={[0, 0, 0]}>
-            <div
-              className={`${
-                showAnnotation ? "opacity-100 visible" : "opacity-0 invisible"
-              } duration-300 transition-all ease-in-out annotation cursor-pointer`}
-            />
+            <TitleTooltip title="CHANGE UPHOLSTERY" orientation="top">
+              <div
+                className={`${
+                  showAnnotation ? "opacity-100 visible" : "opacity-0 invisible"
+                } duration-300 transition-all ease-in-out annotation cursor-pointer`}
+              />
+            </TitleTooltip>
           </Html>
         </mesh>
         <mesh

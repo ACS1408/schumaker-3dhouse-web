@@ -1,9 +1,28 @@
 import React, { useRef } from "react";
 import { useGLTF } from "@react-three/drei";
 import { Html } from "@react-three/drei";
+import TitleTooltip from "@/components/TitleTooltip";
+import { useLoader } from "@react-three/fiber";
+import { TextureLoader } from "three";
+import { useRecoilState } from "recoil";
+import textureState from "@/atoms/textureStates";
+import * as THREE from "three";
 
 export const RoomModel = ({ showAnnotation, ...props }) => {
   const { nodes, materials } = useGLTF("/models/room.glb");
+  const [currentTexture, setCurrentTexture] = useRecoilState(textureState);
+  const wallTexture = useLoader(TextureLoader, currentTexture?.wall?.image);
+  const rugTexture = useLoader(TextureLoader, currentTexture?.rug?.image);
+  const curtainTexture = useLoader(
+    TextureLoader,
+    currentTexture?.curtain?.image
+  );
+  wallTexture.wrapS = wallTexture.wrapT = THREE.RepeatWrapping;
+  wallTexture.repeat.set(6, -6);
+
+  rugTexture.wrapS = rugTexture.wrapT = THREE.RepeatWrapping;
+  rugTexture.repeat.set(3, 3);
+
   return (
     <group {...props} dispose={null}>
       <group position={[0.076, -0.284, -0.292]} scale={0.169}>
@@ -30,7 +49,9 @@ export const RoomModel = ({ showAnnotation, ...props }) => {
             receiveShadow
             geometry={nodes.Cube001.geometry}
             material={materials.Wallpaper}
-          />
+          >
+            <meshStandardMaterial map={wallTexture} />
+          </mesh>
           <mesh
             castShadow
             receiveShadow
@@ -132,11 +153,13 @@ export const RoomModel = ({ showAnnotation, ...props }) => {
           scale={[0.058, 0.127, 0.127]}
         >
           <Html position={[0, -5, -25]}>
-            <div
-              className={`${
-                showAnnotation ? "opacity-100 visible" : "opacity-0 invisible"
-              } duration-300 transition-all ease-in-out annotation cursor-pointer`}
-            ></div>
+            <TitleTooltip title="CHANGE WALLCOVERING" orientation="top">
+              <div
+                className={`${
+                  showAnnotation ? "opacity-100 visible" : "opacity-0 invisible"
+                } duration-300 transition-all ease-in-out annotation cursor-pointer`}
+              />
+            </TitleTooltip>
           </Html>
         </mesh>
         <mesh
@@ -176,11 +199,13 @@ export const RoomModel = ({ showAnnotation, ...props }) => {
           scale={0.893}
         >
           <Html position={[-0.6, 0, 0]}>
-            <div
-              className={`${
-                showAnnotation ? "opacity-100 visible" : "opacity-0 invisible"
-              } duration-300 transition-all ease-in-out annotation cursor-pointer`}
-            />
+            <TitleTooltip title="CHANGE CURTAIN" orientation="top">
+              <div
+                className={`${
+                  showAnnotation ? "opacity-100 visible" : "opacity-0 invisible"
+                } duration-300 transition-all ease-in-out annotation cursor-pointer`}
+              />
+            </TitleTooltip>
           </Html>
         </mesh>
         <mesh
@@ -294,12 +319,15 @@ export const RoomModel = ({ showAnnotation, ...props }) => {
           rotation={[0, Math.PI / 2, 0]}
           scale={[1.501, 1.451, 1.329]}
         >
+          <meshStandardMaterial map={rugTexture} />
           <Html position={[0.25, 0, 0.8]}>
-            <div
-              className={`${
-                showAnnotation ? "opacity-100 visible" : "opacity-0 invisible"
-              } duration-300 transition-all ease-in-out annotation cursor-pointer`}
-            />
+            <TitleTooltip title="CHANGE RUG" orientation="top">
+              <div
+                className={`${
+                  showAnnotation ? "opacity-100 visible" : "opacity-0 invisible"
+                } duration-300 transition-all ease-in-out annotation cursor-pointer`}
+              />
+            </TitleTooltip>
           </Html>
         </mesh>
       </group>

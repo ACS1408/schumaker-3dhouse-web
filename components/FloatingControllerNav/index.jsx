@@ -1,5 +1,6 @@
 import Image from "next/image";
 import React from "react";
+import TitleTooltip from "../TitleTooltip";
 
 const FloatingControllerNav = ({
   openSettingsModal,
@@ -34,86 +35,100 @@ const FloatingControllerNav = ({
         <div
           className={`item-wrap ${nav.item_wrap.default} ${nav.item_wrap.before}`}
         >
-          <button
-            className={`item ${nav.item.default} ${nav.item.hover}`}
-            onClick={openSettingsModal}
-          >
-            <Image
-              src="/icons/icon-settings.svg"
-              width={32}
-              height={32}
-              alt="icon-settings"
-            />
-          </button>
+          <TitleTooltip title="ENVIRONMENT SETTINGS" orientation="top">
+            <button
+              className={`item ${nav.item.default} ${nav.item.hover}`}
+              onClick={openSettingsModal}
+            >
+              <Image
+                src="/icons/icon-settings.svg"
+                width={32}
+                height={32}
+                alt="icon-settings"
+              />
+            </button>
+          </TitleTooltip>
         </div>
         <div
           className={`item-wrap ${nav.item_wrap.default} ${nav.item_wrap.before}`}
         >
-          <button
-            className={`item ${nav.item.default} ${nav.item.hover}`}
-            onClick={openWallTextureModal}
-          >
-            <Image
-              src="/icons/icon-wallpaper.svg"
-              width={32}
-              height={32}
-              alt="icon-settings"
-            />
-          </button>
-          <button
-            className={`item ${nav.item.default} ${nav.item.hover}`}
-            onClick={openRugTextureModal}
-          >
-            <Image
-              src="/icons/icon-rug.svg"
-              width={32}
-              height={32}
-              alt="icon-settings"
-            />
-          </button>
-          <button
-            className={`item ${nav.item.default} ${nav.item.hover}`}
-            onClick={openCurtainTextureModal}
-          >
-            <Image
-              src="/icons/icon-curtain.svg"
-              width={32}
-              height={32}
-              alt="icon-settings"
-            />
-          </button>
-          <button
-            className={`item ${nav.item.default} ${nav.item.hover}`}
-            onClick={openUpholsteryTextureModal}
-          >
-            <Image
-              src="/icons/icon-sofa.svg"
-              width={32}
-              height={32}
-              alt="icon-settings"
-            />
-          </button>
+          <TitleTooltip title="CHANGE WALLCOVERING" orientation="top">
+            <button
+              className={`item ${nav.item.default} ${nav.item.hover}`}
+              onClick={openWallTextureModal}
+            >
+              <Image
+                src="/icons/icon-wallpaper.svg"
+                width={32}
+                height={32}
+                alt="icon-settings"
+              />
+            </button>
+          </TitleTooltip>
+          <TitleTooltip title="CHANGE RUG" orientation="top">
+            <button
+              className={`item ${nav.item.default} ${nav.item.hover}`}
+              onClick={openRugTextureModal}
+            >
+              <Image
+                src="/icons/icon-rug.svg"
+                width={32}
+                height={32}
+                alt="icon-settings"
+              />
+            </button>
+          </TitleTooltip>
+          <TitleTooltip title="CHANGE CURTAIN" orientation="top">
+            <button
+              className={`item ${nav.item.default} ${nav.item.hover}`}
+              onClick={openCurtainTextureModal}
+            >
+              <Image
+                src="/icons/icon-curtain.svg"
+                width={32}
+                height={32}
+                alt="icon-settings"
+              />
+            </button>
+          </TitleTooltip>
+          <TitleTooltip title="CHANGE UPHOLSTERY" orientation="top">
+            <button
+              className={`item ${nav.item.default} ${nav.item.hover}`}
+              onClick={openUpholsteryTextureModal}
+            >
+              <Image
+                src="/icons/icon-sofa.svg"
+                width={32}
+                height={32}
+                alt="icon-settings"
+              />
+            </button>
+          </TitleTooltip>
         </div>
         <div className={`item-wrap ${nav.item_wrap.default}`}>
-          <button
-            className={`item ${nav.item.default} ${nav.item.hover}`}
-            onClick={takeSnapShot}
-          >
-            <Image
-              src="/icons/icon-snapshot.svg"
-              width={32}
-              height={32}
-              alt="icon-settings"
-            />
-          </button>
-          <button className={`item ${nav.item.default} ${nav.item.hover}`}>
-            <Image
-              src="/icons/icon-comments.svg"
-              width={32}
-              height={32}
-              alt="icon-settings"
-            />
-          </button>
+          <TitleTooltip title="TAKE ROOM SNAPSHOT" orientation="top">
+            <button
+              className={`item ${nav.item.default} ${nav.item.hover}`}
+              onClick={takeSnapShot}
+            >
+              <Image
+                src="/icons/icon-snapshot.svg"
+                width={32}
+                height={32}
+                alt="icon-settings"
+              />
+            </button>
+          </TitleTooltip>
+          <TitleTooltip title="LEAVE FEEDBACK" orientation="top">
+            <button className={`item ${nav.item.default} ${nav.item.hover}`}>
+              <Image
+                src="/icons/icon-comments.svg"
+                width={32}
+                height={32}
+                alt="icon-settings"
+              />
+            </button>
+          </TitleTooltip>
         </div>
       </div>
     </nav>

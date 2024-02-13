@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import ModalContainer from "../ModalContainer";
 import Image from "next/image";
 import { textures } from "@/data/wallTextures";
@@ -12,14 +12,6 @@ const WallTexturesModal = ({
 }) => {
   const [selectedTexture, setSelectedTexture] = useRecoilState(textureState);
 
-  useEffect(() => {
-    console.log(
-      selectedTexture?.wall,
-      textures[0],
-      "selected",
-      selectedTexture?.wall === textures[0]
-    );
-  }, [selectedTexture]);
   return (
     <ModalContainer
       title="Choose your wallcovering"

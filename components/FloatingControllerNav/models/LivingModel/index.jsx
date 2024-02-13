@@ -1,9 +1,23 @@
 import React, { useRef } from "react";
 import { useGLTF } from "@react-three/drei";
 import { Html } from "@react-three/drei";
+import TitleTooltip from "@/components/TitleTooltip";
+import { useRecoilState } from "recoil";
+import textureState from "@/atoms/textureStates";
+import { useLoader } from "@react-three/fiber";
+import { TextureLoader } from "three";
+import * as THREE from "three";
 
 export const LivingModel = ({ showAnnotation, ...props }) => {
   const { nodes, materials } = useGLTF("/models/living.glb");
+  const [currentTexture, setCurrentTexture] = useRecoilState(textureState);
+  const upholsteryTexture = useLoader(
+    TextureLoader,
+    currentTexture?.upholstery?.image
+  );
+
+  upholsteryTexture.wrapS = upholsteryTexture.wrapT = THREE.RepeatWrapping;
+  upholsteryTexture.repeat.set(1.2, 1.2);
   return (
     <group {...props} dispose={null}>
       <group position={[-0.477, -0.507, 0.622]} scale={0.639}>
@@ -32,12 +46,17 @@ export const LivingModel = ({ showAnnotation, ...props }) => {
             geometry={nodes.Object008001.geometry}
             material={materials.Couch}
           >
+            <meshStandardMaterial map={upholsteryTexture} />
             <Html position={[-0.35, 0.5, 1]}>
-              <div
-                className={`${
-                  showAnnotation ? "opacity-100 visible" : "opacity-0 invisible"
-                } duration-300 transition-all ease-in-out annotation cursor-pointer`}
-              />
+              <TitleTooltip title="CHANGE UPHOLSTERY" orientation="bottom">
+                <div
+                  className={`${
+                    showAnnotation
+                      ? "opacity-100 visible"
+                      : "opacity-0 invisible"
+                  } duration-300 transition-all ease-in-out annotation cursor-pointer`}
+                />
+              </TitleTooltip>
             </Html>
           </mesh>
           <mesh
@@ -93,7 +112,9 @@ export const LivingModel = ({ showAnnotation, ...props }) => {
             material={materials["Couch Fabric"]}
             position={[-1.655, 0.983, 2.222]}
             scale={[6.947, 11.756, 6.947]}
-          />
+          >
+            <meshStandardMaterial map={upholsteryTexture} />
+          </mesh>
           <mesh
             castShadow
             receiveShadow
@@ -101,7 +122,9 @@ export const LivingModel = ({ showAnnotation, ...props }) => {
             material={materials["Couch Fabric"]}
             position={[-1.37, 2.925, 2.222]}
             scale={[6.947, 11.756, 6.947]}
-          />
+          >
+            <meshStandardMaterial map={upholsteryTexture} />
+          </mesh>
           <mesh
             castShadow
             receiveShadow
@@ -117,7 +140,9 @@ export const LivingModel = ({ showAnnotation, ...props }) => {
             position={[-4.192, 4.281, 2.217]}
             rotation={[0, Math.PI / 2, 0]}
             scale={[6.947, 10.97, 6.947]}
-          />
+          >
+            <meshStandardMaterial map={upholsteryTexture} />
+          </mesh>
         </mesh>
         <mesh
           castShadow
@@ -136,7 +161,9 @@ export const LivingModel = ({ showAnnotation, ...props }) => {
             position={[-4.192, 4.281, 2.217]}
             rotation={[0, Math.PI / 2, 0]}
             scale={[6.947, 10.97, 6.947]}
-          />
+          >
+            <meshStandardMaterial map={upholsteryTexture} />
+          </mesh>
           <mesh
             castShadow
             receiveShadow
@@ -165,7 +192,9 @@ export const LivingModel = ({ showAnnotation, ...props }) => {
             material={materials["Couch Fabric"]}
             position={[-1.655, 0.983, 2.222]}
             scale={[6.947, 11.756, 6.947]}
-          />
+          >
+            <meshStandardMaterial map={upholsteryTexture} />
+          </mesh>
           <mesh
             castShadow
             receiveShadow
@@ -173,7 +202,9 @@ export const LivingModel = ({ showAnnotation, ...props }) => {
             material={materials["Couch Fabric"]}
             position={[-1.37, 2.925, 2.222]}
             scale={[6.947, 11.756, 6.947]}
-          ></mesh>
+          >
+            <meshStandardMaterial map={upholsteryTexture} />
+          </mesh>
         </mesh>
         <mesh
           castShadow
@@ -192,11 +223,13 @@ export const LivingModel = ({ showAnnotation, ...props }) => {
             scale={8.978}
           />
           <Html position={[-0.5, -8, 0.5]}>
-            <div
-              className={`${
-                showAnnotation ? "opacity-100 visible" : "opacity-0 invisible"
-              } duration-300 transition-all ease-in-out annotation cursor-pointer`}
-            />
+            <TitleTooltip title="TURN LAMP ON/OFF" orientation="bottom">
+              <div
+                className={`${
+                  showAnnotation ? "opacity-100 visible" : "opacity-0 invisible"
+                } duration-300 transition-all ease-in-out annotation cursor-pointer`}
+              />
+            </TitleTooltip>
           </Html>
         </mesh>
         <mesh
