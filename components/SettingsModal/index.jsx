@@ -4,12 +4,12 @@ import OptionsToggler from "../OptionsToggler";
 import { useRecoilState } from "recoil";
 import roomSettingState from "@/atoms/roomSettingState";
 
-const SettingsModal = ({ closeSettingsModal, isSettingsMenuOpen }) => {
+const SettingsModal = ({ closeSettingsModal, show }) => {
   const [roomSetting, setRoomSettings] = useRecoilState(roomSettingState);
   return (
     <ModalContainer
       title="Settings"
-      show={isSettingsMenuOpen}
+      show={show}
       onClose={closeSettingsModal}
     >
       <OptionsToggler

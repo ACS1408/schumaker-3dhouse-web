@@ -8,14 +8,14 @@ import textureState from "@/atoms/textureStates";
 
 const WallTexturesModal = ({
   closeWallTextureModal,
-  isWallTextureModalOpen,
+  show,
 }) => {
   const [selectedTexture, setSelectedTexture] = useRecoilState(textureState);
 
   return (
     <ModalContainer
       title="Choose your wallcovering"
-      show={isWallTextureModalOpen}
+      show={show}
       onClose={closeWallTextureModal}
     >
       <div

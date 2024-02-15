@@ -8,14 +8,14 @@ import textureState from "@/atoms/textureStates";
 
 const UpholsteryTexturesModal = ({
   closeUpholsteryTextureModal,
-  isUpholsteryTextureModalOpen,
+  show,
 }) => {
   const [selectedTexture, setSelectedTexture] = useRecoilState(textureState);
 
   return (
     <ModalContainer
       title="Choose your upholstery fabric"
-      show={isUpholsteryTextureModalOpen}
+      show={show}
       onClose={closeUpholsteryTextureModal}
     >
       <div

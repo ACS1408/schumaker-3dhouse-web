@@ -10,27 +10,25 @@ import WallTexturesModal from "@/components/WallTexturesModal";
 import RugTexturesModal from "@/components/RugTexturesModal";
 import CurtainTexturesModal from "@/components/CurtainTexturesModal";
 import UpholsteryTexturesModal from "@/components/UpholsteryTexturesModal";
+import { useRecoilState } from "recoil";
+import modalState from "@/atoms/modalState";
 
 const HomeRoomWidget = () => {
   const {
     takeSnapShot,
     closeSettingsModal,
     openSettingsModal,
-    isSettingsMenuOpen,
     setThreeContext,
     openWallTextureModal,
     closeWallTextureModal,
-    isWallTextureModalOpen,
     openRugTextureModal,
     closeRugTextureModal,
-    isRugTextureModalOpen,
     openCurtainTextureModal,
     closeCurtainTextureModal,
-    isCurtainTextureModalOpen,
     openUpholsteryTextureModal,
     closeUpholsteryTextureModal,
-    isUpholsteryTextureModalOpen,
   } = useHomeRoomWidget();
+  const [isModalOpen, setIsModalOpen] = useRecoilState(modalState);
   return (
     <main className="home-room-widget w-full h-svh bg-black">
       <div className="flex justify-center py-7 z-10 relative">
@@ -51,27 +49,27 @@ const HomeRoomWidget = () => {
         </Suspense>
       </Canvas>
       <SettingsModal
-        isSettingsMenuOpen={isSettingsMenuOpen}
+        show={isModalOpen.settings}
         openSettingsModal={openSettingsModal}
         closeSettingsModal={closeSettingsModal}
       />
       <WallTexturesModal
-        isWallTextureModalOpen={isWallTextureModalOpen}
+        show={isModalOpen.wall}
         openWallTextureModal={openWallTextureModal}
         closeWallTextureModal={closeWallTextureModal}
       />
       <RugTexturesModal
-        isRugTextureModalOpen={isRugTextureModalOpen}
+        show={isModalOpen.rug}
         openRugTextureModal={openRugTextureModal}
         closeRugTextureModal={closeRugTextureModal}
       />
       <CurtainTexturesModal
-        isCurtainTextureModalOpen={isCurtainTextureModalOpen}
+        show={isModalOpen.curtain}
         openCurtainTextureModal={openCurtainTextureModal}
         closeCurtainTextureModal={closeCurtainTextureModal}
       />
       <UpholsteryTexturesModal
-        isUpholsteryTextureModalOpen={isUpholsteryTextureModalOpen}
+        show={isModalOpen.upholstery}
         openUpholsteryTextureModal={openUpholsteryTextureModal}
         closeUpholsteryTextureModal={closeUpholsteryTextureModal}
       />

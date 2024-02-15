@@ -6,12 +6,12 @@ import Style from "./RugTexturesModal.module.scss";
 import textureState from "@/atoms/textureStates";
 import { useRecoilState } from "recoil";
 
-const RugTexturesModal = ({ closeRugTextureModal, isRugTextureModalOpen }) => {
+const RugTexturesModal = ({ closeRugTextureModal, show }) => {
   const [selectedTexture, setSelectedTexture] = useRecoilState(textureState);
   return (
     <ModalContainer
       title="Choose your rug"
-      show={isRugTextureModalOpen}
+      show={show}
       onClose={closeRugTextureModal}
     >
       <div

@@ -7,21 +7,32 @@ import { TextureLoader } from "three";
 import { useRecoilState } from "recoil";
 import textureState from "@/atoms/textureStates";
 import * as THREE from "three";
+import useHomeRoomWidget from "@/widgets/HomeRoomWidget/useHomeRoomWidget";
 
 export const RoomModel = ({ showAnnotation, ...props }) => {
   const { nodes, materials } = useGLTF("/models/room.glb");
   const [currentTexture, setCurrentTexture] = useRecoilState(textureState);
+  // const environment = useLoader(
+  //   TextureLoader,
+  //   "/images/environments/beach.jpg"
+  // );
   const wallTexture = useLoader(TextureLoader, currentTexture?.wall?.image);
   const rugTexture = useLoader(TextureLoader, currentTexture?.rug?.image);
   const curtainTexture = useLoader(
     TextureLoader,
     currentTexture?.curtain?.image
   );
+  const { openWallTextureModal, openRugTextureModal, openCurtainTextureModal } =
+    useHomeRoomWidget();
+
   wallTexture.wrapS = wallTexture.wrapT = THREE.RepeatWrapping;
   wallTexture.repeat.set(6, -6);
 
   rugTexture.wrapS = rugTexture.wrapT = THREE.RepeatWrapping;
   rugTexture.repeat.set(3, 3);
+
+  curtainTexture.wrapS = curtainTexture.wrapT = THREE.RepeatWrapping;
+  curtainTexture.repeat.set(4, 4);
 
   return (
     <group {...props} dispose={null}>
@@ -33,7 +44,9 @@ export const RoomModel = ({ showAnnotation, ...props }) => {
           material={materials["Beach View.001"]}
           position={[-0.566, 1.683, 1.735]}
           scale={22.356}
-        />
+        >
+          {/* <meshStandardMaterial map={environment} /> */}
+        </mesh>
         <mesh
           castShadow
           receiveShadow
@@ -158,6 +171,7 @@ export const RoomModel = ({ showAnnotation, ...props }) => {
                 className={`${
                   showAnnotation ? "opacity-100 visible" : "opacity-0 invisible"
                 } duration-300 transition-all ease-in-out annotation cursor-pointer`}
+                onClick={openWallTextureModal}
               />
             </TitleTooltip>
           </Html>
@@ -179,7 +193,14 @@ export const RoomModel = ({ showAnnotation, ...props }) => {
           position={[-2.354, 2.602, 1.511]}
           rotation={[-1.801, 1.547, 0.225]}
           scale={0.893}
-        />
+        >
+          <meshStandardMaterial
+            attach="material"
+            transparent
+            side={THREE.DoubleSide}
+            map={curtainTexture}
+          />
+        </mesh>
         <mesh
           castShadow
           receiveShadow
@@ -188,7 +209,14 @@ export const RoomModel = ({ showAnnotation, ...props }) => {
           position={[2.906, 2.602, 3.085]}
           rotation={[-3.118, -0.006, 1.566]}
           scale={0.893}
-        />
+        >
+          <meshStandardMaterial
+            attach="material"
+            transparent
+            side={THREE.DoubleSide}
+            map={curtainTexture}
+          />
+        </mesh>
         <mesh
           castShadow
           receiveShadow
@@ -204,9 +232,16 @@ export const RoomModel = ({ showAnnotation, ...props }) => {
                 className={`${
                   showAnnotation ? "opacity-100 visible" : "opacity-0 invisible"
                 } duration-300 transition-all ease-in-out annotation cursor-pointer`}
+                onClick={openCurtainTextureModal}
               />
             </TitleTooltip>
           </Html>
+          <meshStandardMaterial
+            attach="material"
+            transparent
+            side={THREE.DoubleSide}
+            map={curtainTexture}
+          />
         </mesh>
         <mesh
           castShadow
@@ -216,7 +251,14 @@ export const RoomModel = ({ showAnnotation, ...props }) => {
           position={[-1.107, 2.602, 3.085]}
           rotation={[-3.118, -0.006, 1.566]}
           scale={0.893}
-        />
+        >
+          <meshStandardMaterial
+            attach="material"
+            transparent
+            side={THREE.DoubleSide}
+            map={curtainTexture}
+          />
+        </mesh>
         <mesh
           castShadow
           receiveShadow
@@ -326,6 +368,7 @@ export const RoomModel = ({ showAnnotation, ...props }) => {
                 className={`${
                   showAnnotation ? "opacity-100 visible" : "opacity-0 invisible"
                 } duration-300 transition-all ease-in-out annotation cursor-pointer`}
+                onClick={openRugTextureModal}
               />
             </TitleTooltip>
           </Html>

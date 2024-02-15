@@ -11,6 +11,8 @@ const textureState = atom({
     rug: rugTextures[0],
     curtain: curtainTextures[0],
     upholstery: upholsteryTextures[0],
+    lamp_living: false,
+    lamp_dining: false,
   },
 });
 

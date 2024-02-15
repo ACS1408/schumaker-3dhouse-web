@@ -6,10 +6,12 @@ import { useRecoilState } from "recoil";
 import textureState from "@/atoms/textureStates";
 import { useLoader } from "@react-three/fiber";
 import { TextureLoader } from "three";
+import useHomeRoomWidget from "@/widgets/HomeRoomWidget/useHomeRoomWidget";
 
 export const DiningModel = ({ showAnnotation, ...props }) => {
   const { nodes, materials } = useGLTF("/models/dinning.glb");
   const [currentTexture, setCurrentTexture] = useRecoilState(textureState);
+  const { openUpholsteryTextureModal } = useHomeRoomWidget();
   const upholsteryTexture = useLoader(
     TextureLoader,
     currentTexture?.upholstery?.image
@@ -99,6 +101,12 @@ export const DiningModel = ({ showAnnotation, ...props }) => {
                       ? "opacity-100 visible"
                       : "opacity-0 invisible"
                   } duration-300 transition-all ease-in-out annotation cursor-pointer`}
+                  onClick={() =>
+                    setCurrentTexture((prevState) => ({
+                      ...prevState,
+                      lamp_dining: !currentTexture.lamp_dining,
+                    }))
+                  }
                 />
               </TitleTooltip>
             </Html>
@@ -424,6 +432,7 @@ export const DiningModel = ({ showAnnotation, ...props }) => {
                 className={`${
                   showAnnotation ? "opacity-100 visible" : "opacity-0 invisible"
                 } duration-300 transition-all ease-in-out annotation cursor-pointer`}
+                onClick={openUpholsteryTextureModal}
               />
             </TitleTooltip>
           </Html>

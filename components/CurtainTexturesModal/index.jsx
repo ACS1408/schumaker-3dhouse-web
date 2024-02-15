@@ -8,14 +8,14 @@ import textureState from "@/atoms/textureStates";
 
 const CurtainTexturesModal = ({
   closeCurtainTextureModal,
-  isCurtainTextureModalOpen,
+  show,
 }) => {
   const [selectedTexture, setSelectedTexture] = useRecoilState(textureState);
 
   return (
     <ModalContainer
       title="Choose your curtain fabric"
-      show={isCurtainTextureModalOpen}
+      show={show}
       onClose={closeCurtainTextureModal}
     >
       <div

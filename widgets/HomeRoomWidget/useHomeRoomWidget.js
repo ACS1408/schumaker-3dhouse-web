@@ -1,13 +1,10 @@
 import { useEffect, useState } from "react";
 import { saveAs } from "file-saver";
+import { useRecoilState } from "recoil";
+import modalState from "@/atoms/modalState";
 
 const useHomeRoomWidget = () => {
-  let [isSettingsMenuOpen, setIsSettingsMenuOpen] = useState(false);
-  let [isWallTextureModalOpen, setIsWallTextureModalOpen] = useState(false);
-  let [isRugTextureModalOpen, setIsRugTextureModalOpen] = useState(false);
-  let [isCurtainTextureModalOpen, setIsCurtainTextureModalOpen] =
-  useState(false);
-  let [isUpholsteryTextureModalOpen, setIsUpholsteryTextureModalOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useRecoilState(modalState);
   const [threeContext, setThreeContext] = useState({});
 
   const takeSnapShot = () => {
@@ -36,72 +33,98 @@ const useHomeRoomWidget = () => {
   };
 
   const closeSettingsModal = () => {
-    setIsSettingsMenuOpen(false);
+    setIsModalOpen((prevState) => ({ ...prevState, settings: false }));
   };
   const openSettingsModal = () => {
-    setIsSettingsMenuOpen(true);
+    setIsModalOpen({
+      settings: true,
+      wall: false,
+      rug: false,
+      curtain: false,
+      upholstery: false,
+    });
   };
 
   const closeWallTextureModal = () => {
-    setIsWallTextureModalOpen(false);
+    setIsModalOpen((prevState) => ({ ...prevState, wall: false }));
   };
   const openWallTextureModal = () => {
-    setIsWallTextureModalOpen(true);
+    setIsModalOpen({
+      settings: false,
+      wall: true,
+      rug: false,
+      curtain: false,
+      upholstery: false,
+    });
   };
 
   const closeRugTextureModal = () => {
-    setIsRugTextureModalOpen(false);
+    setIsModalOpen((prevState) => ({ ...prevState, rug: false }));
   };
   const openRugTextureModal = () => {
-    setIsRugTextureModalOpen(true);
+    setIsModalOpen({
+      settings: false,
+      wall: false,
+      rug: true,
+      curtain: false,
+      upholstery: false,
+    });
   };
 
   const closeCurtainTextureModal = () => {
-    setIsCurtainTextureModalOpen(false);
+    setIsModalOpen((prevState) => ({ ...prevState, curtain: false }));
   };
   const openCurtainTextureModal = () => {
-    setIsCurtainTextureModalOpen(true);
+    setIsModalOpen({
+      settings: false,
+      wall: false,
+      rug: false,
+      curtain: true,
+      upholstery: false,
+    });
   };
 
   const closeUpholsteryTextureModal = () => {
-    setIsUpholsteryTextureModalOpen(false);
+    setIsModalOpen((prevState) => ({ ...prevState, upholstery: false }));
   };
   const openUpholsteryTextureModal = () => {
-    setIsUpholsteryTextureModalOpen(true);
+    setIsModalOpen({
+      settings: false,
+      wall: false,
+      rug: true,
+      curtain: false,
+      upholstery: true,
+    });
   };
 
   useEffect(() => {
-    if (isSettingsMenuOpen) {
+    if (
+      isModalOpen.settings ||
+      isModalOpen.wall ||
+      isModalOpen.rug ||
+      isModalOpen.curtain ||
+      isModalOpen.upholstery
+    ) {
       setTimeout(() => {
         document.querySelector(".home-room-widget").removeAttribute("inert");
       }, 300);
     }
-  }, [isSettingsMenuOpen]);
+  }, [isModalOpen]);
   return {
     takeSnapShot,
     convertBase64ToFile,
     closeSettingsModal,
     openSettingsModal,
-    isSettingsMenuOpen,
-    setIsSettingsMenuOpen,
     threeContext,
     setThreeContext,
     openWallTextureModal,
     closeWallTextureModal,
-    isWallTextureModalOpen,
-    setIsWallTextureModalOpen,
     openRugTextureModal,
     closeRugTextureModal,
-    isRugTextureModalOpen,
-    setIsRugTextureModalOpen,
     openCurtainTextureModal,
     closeCurtainTextureModal,
-    isCurtainTextureModalOpen,
-    setIsCurtainTextureModalOpen,
     openUpholsteryTextureModal,
     closeUpholsteryTextureModal,
-    isUpholsteryTextureModalOpen,
-    setIsUpholsteryTextureModalOpen,
   };
 };
 
