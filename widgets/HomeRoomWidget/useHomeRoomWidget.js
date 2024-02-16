@@ -91,7 +91,7 @@ const useHomeRoomWidget = () => {
     setIsModalOpen({
       settings: false,
       wall: false,
-      rug: true,
+      rug: false,
       curtain: false,
       upholstery: true,
     });

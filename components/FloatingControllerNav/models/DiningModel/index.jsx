@@ -93,6 +93,9 @@ export const DiningModel = ({ showAnnotation, ...props }) => {
             position={[-0.002, -1.398, 0]}
             scale={8.978}
           >
+            {currentTexture?.lamp_dining ? (
+              <pointLight position={[0, 0, 0]} intensity={1} color="#fff" />
+            ) : null}
             <Html position={[0, 0, 0]}>
               <TitleTooltip title="TURN LAMP ON/OFF" orientation="top">
                 <div

@@ -43,6 +43,7 @@ const HomeRoomWidget = () => {
       <Canvas
         className="!fixed inset-0 !w-full !h-[100svh] z-[0]"
         gl={{ preserveDrawingBuffer: true }}
+        frameloop="demand"
       >
         <Suspense fallback={null}>
           <Scene setThreeContext={setThreeContext} />

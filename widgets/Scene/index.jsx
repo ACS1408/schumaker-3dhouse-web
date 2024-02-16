@@ -24,13 +24,15 @@ const Scene = ({ setThreeContext }) => {
     clearTimeout(timeoutId);
     timeoutId = setTimeout(() => {
       setShowAnnotation(false);
-    }, 1000);
+    }, 2000);
   };
 
   useEffect(() => {
     window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("click", handleMouseMove);
     return () => {
       window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("click", handleMouseMove);
     };
   }, []);
 
@@ -136,6 +138,8 @@ const Scene = ({ setThreeContext }) => {
         fov={fov}
       /> */}
       <OrbitControls />
+      <directionalLight position={[5, -2, 4]} />
+      <ambientLight intensity={0.7} />
       <RoomModel showAnnotation={showAnnotation} />
       {roomSetting?.layout?.value === "dining" ? (
         <>
@@ -162,7 +166,9 @@ const Scene = ({ setThreeContext }) => {
           />
         </>
       )}
-      <Environment preset="sunset" />
+      {/* <Environment preset="sunset" /> */}
+      {/* <axesHelper args={[5]} />
+      <gridHelper /> */}
     </>
   );
 };

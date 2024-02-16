@@ -8,6 +8,7 @@ import { useLoader } from "@react-three/fiber";
 import { TextureLoader } from "three";
 import * as THREE from "three";
 import useHomeRoomWidget from "@/widgets/HomeRoomWidget/useHomeRoomWidget";
+// import { EffectComposer, Bloom } from "@react-three/postprocessing";
 
 export const LivingModel = ({ showAnnotation, ...props }) => {
   const { nodes, materials } = useGLTF("/models/living.glb");
@@ -20,6 +21,7 @@ export const LivingModel = ({ showAnnotation, ...props }) => {
 
   upholsteryTexture.wrapS = upholsteryTexture.wrapT = THREE.RepeatWrapping;
   upholsteryTexture.repeat.set(1.2, 1.2);
+
   return (
     <group {...props} dispose={null}>
       <group position={[-0.477, -0.507, 0.622]} scale={0.639}>
@@ -225,6 +227,16 @@ export const LivingModel = ({ showAnnotation, ...props }) => {
             position={[-0.002, -1.398, 0]}
             scale={8.978}
           />
+          {/* <EffectComposer>
+            <Bloom
+              luminanceThreshold={0}
+              luminanceSmoothing={0.9}
+              height={300}
+            />
+          </EffectComposer> */}
+          {currentTexture?.lamp_living ? (
+            <pointLight position={[0, 0, 0]} intensity={0.4} color="#fff" />
+          ) : null}
           <Html position={[-0.5, -8, 0.5]}>
             <TitleTooltip title="TURN LAMP ON/OFF" orientation="bottom">
               <div
