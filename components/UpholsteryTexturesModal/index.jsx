@@ -5,12 +5,11 @@ import { textures } from "@/data/upholsteryTextures";
 import Style from "./UpholsteryTexturesModal.module.scss";
 import { useRecoilState } from "recoil";
 import textureState from "@/atoms/textureStates";
+import roomSettingState from "@/atoms/roomSettingState";
 
-const UpholsteryTexturesModal = ({
-  closeUpholsteryTextureModal,
-  show,
-}) => {
+const UpholsteryTexturesModal = ({ closeUpholsteryTextureModal, show }) => {
   const [selectedTexture, setSelectedTexture] = useRecoilState(textureState);
+  const [roomSettings, setRoomSettings] = useRecoilState(roomSettingState);
 
   return (
     <ModalContainer
@@ -26,21 +25,32 @@ const UpholsteryTexturesModal = ({
             return (
               <figure
                 className={`${
-                  selectedTexture?.upholstery === texture
+                  roomSettings?.layout?.value === "living" &&
+                  selectedTexture?.upholstery_living === texture
+                    ? "border border-[#333] p-1.5"
+                    : ""
+                } ${
+                  roomSettings?.layout?.value === "dining" &&
+                  selectedTexture?.upholstery_dining === texture
                     ? "border border-[#333] p-1.5"
                     : ""
                 } texture-item cursor-pointer transition-all duration-300 ease-out`}
                 key={i}
                 onClick={() =>
-                  setSelectedTexture((prevState) => ({
-                    ...prevState,
-                    upholstery: texture,
-                  }))
+                  roomSettings?.layout?.value === "living"
+                    ? setSelectedTexture((prevState) => ({
+                        ...prevState,
+                        upholstery_living: texture,
+                      }))
+                    : setSelectedTexture((prevState) => ({
+                        ...prevState,
+                        upholstery_dining: texture,
+                      }))
                 }
                 title={texture.name}
               >
                 <Image
-                  src={texture?.image}
+                  src={texture?.thumb}
                   width={120}
                   height={120}
                   sizes="6vw"

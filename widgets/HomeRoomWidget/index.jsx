@@ -36,7 +36,7 @@ const HomeRoomWidget = () => {
           src="/brand-logo.svg"
           width={190}
           height={30}
-          unoptimized
+          priority
           alt="schumacher-logo"
         />
       </div>

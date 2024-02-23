@@ -40,7 +40,7 @@ const CurtainTexturesModal = ({
                 title={texture.name}
               >
                 <Image
-                  src={texture?.image}
+                  src={texture?.thumb}
                   width={120}
                   height={120}
                   sizes="6vw"

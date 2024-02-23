@@ -1,21 +1,27 @@
-import React, { useRef } from "react";
+import React from "react";
 import { useGLTF } from "@react-three/drei";
 import { Html } from "@react-three/drei";
 import TitleTooltip from "@/components/TitleTooltip";
-import { useLoader } from "@react-three/fiber";
+import { useLoader, useThree } from "@react-three/fiber";
 import { TextureLoader } from "three";
 import { useRecoilState } from "recoil";
 import textureState from "@/atoms/textureStates";
 import * as THREE from "three";
 import useHomeRoomWidget from "@/widgets/HomeRoomWidget/useHomeRoomWidget";
+import roomSettingState from "@/atoms/roomSettingState";
+import { cameraPositions } from "@/data/cameraPositions";
 
-export const RoomModel = ({ showAnnotation, ...props }) => {
+export const RoomModel = ({ showAnnotation, setCamSettings, ...props }) => {
   const { nodes, materials } = useGLTF("/models/room.glb");
   const [currentTexture, setCurrentTexture] = useRecoilState(textureState);
-  // const environment = useLoader(
-  //   TextureLoader,
-  //   "/images/environments/beach.jpg"
-  // );
+  const [roomSettings, setRoomSettings] = useRecoilState(roomSettingState);
+
+  const environment = useLoader(
+    TextureLoader,
+    roomSettings?.environment?.value === "beach"
+      ? "/images/environments/beach.jpg"
+      : "/images/environments/forest.jpg"
+  );
   const wallTexture = useLoader(TextureLoader, currentTexture?.wall?.image);
   const rugTexture = useLoader(TextureLoader, currentTexture?.rug?.image);
   const curtainTexture = useLoader(
@@ -25,14 +31,29 @@ export const RoomModel = ({ showAnnotation, ...props }) => {
   const { openWallTextureModal, openRugTextureModal, openCurtainTextureModal } =
     useHomeRoomWidget();
 
+  environment.flipY = false;
+
   wallTexture.wrapS = wallTexture.wrapT = THREE.RepeatWrapping;
-  wallTexture.repeat.set(6, -6);
+  wallTexture.repeat.set(4, -4);
 
   rugTexture.wrapS = rugTexture.wrapT = THREE.RepeatWrapping;
-  rugTexture.repeat.set(3, 3);
+  rugTexture.repeat.set(1, 1);
 
   curtainTexture.wrapS = curtainTexture.wrapT = THREE.RepeatWrapping;
-  curtainTexture.repeat.set(4, 4);
+  curtainTexture.repeat.set(1, 1);
+
+  const handleClickWall = () => {
+    openWallTextureModal();
+    setCamSettings({ ...cameraPositions?.wall });
+  };
+  const handleClickRug = () => {
+    openRugTextureModal();
+    setCamSettings({ ...cameraPositions.rug });
+  };
+  const handleClickCurtain = () => {
+    openCurtainTextureModal();
+    setCamSettings({ ...cameraPositions.curtain });
+  };
 
   return (
     <group {...props} dispose={null}>
@@ -45,7 +66,7 @@ export const RoomModel = ({ showAnnotation, ...props }) => {
           position={[-0.566, 1.683, 1.735]}
           scale={22.356}
         >
-          {/* <meshStandardMaterial map={environment} /> */}
+          <meshStandardMaterial map={environment} />
         </mesh>
         <mesh
           castShadow
@@ -63,7 +84,7 @@ export const RoomModel = ({ showAnnotation, ...props }) => {
             geometry={nodes.Cube001.geometry}
             material={materials.Wallpaper}
           >
-            <meshStandardMaterial map={wallTexture} />
+            <meshStandardMaterial map={wallTexture} side={THREE.DoubleSide} />
           </mesh>
           <mesh
             castShadow
@@ -171,7 +192,7 @@ export const RoomModel = ({ showAnnotation, ...props }) => {
                 className={`${
                   showAnnotation ? "opacity-100 visible" : "opacity-0 invisible"
                 } duration-300 transition-all ease-in-out annotation cursor-pointer`}
-                onClick={openWallTextureModal}
+                onClick={handleClickWall}
               />
             </TitleTooltip>
           </Html>
@@ -232,7 +253,7 @@ export const RoomModel = ({ showAnnotation, ...props }) => {
                 className={`${
                   showAnnotation ? "opacity-100 visible" : "opacity-0 invisible"
                 } duration-300 transition-all ease-in-out annotation cursor-pointer`}
-                onClick={openCurtainTextureModal}
+                onClick={handleClickCurtain}
               />
             </TitleTooltip>
           </Html>
@@ -368,7 +389,7 @@ export const RoomModel = ({ showAnnotation, ...props }) => {
                 className={`${
                   showAnnotation ? "opacity-100 visible" : "opacity-0 invisible"
                 } duration-300 transition-all ease-in-out annotation cursor-pointer`}
-                onClick={openRugTextureModal}
+                onClick={handleClickRug}
               />
             </TitleTooltip>
           </Html>

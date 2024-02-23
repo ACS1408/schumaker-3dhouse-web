@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React from "react";
 import { useGLTF } from "@react-three/drei";
 import { Html } from "@react-three/drei";
 import TitleTooltip from "@/components/TitleTooltip";
@@ -7,15 +7,22 @@ import textureState from "@/atoms/textureStates";
 import { useLoader } from "@react-three/fiber";
 import { TextureLoader } from "three";
 import useHomeRoomWidget from "@/widgets/HomeRoomWidget/useHomeRoomWidget";
+import * as THREE from "three";
+import lampState from "@/atoms/lampState";
 
 export const DiningModel = ({ showAnnotation, ...props }) => {
   const { nodes, materials } = useGLTF("/models/dinning.glb");
   const [currentTexture, setCurrentTexture] = useRecoilState(textureState);
+  const [lampToggle, setLampToggle] = useRecoilState(lampState);
   const { openUpholsteryTextureModal } = useHomeRoomWidget();
   const upholsteryTexture = useLoader(
     TextureLoader,
-    currentTexture?.upholstery?.image
+    currentTexture?.upholstery_dining?.image
   );
+
+  upholsteryTexture.wrapS = upholsteryTexture.wrapT = THREE.RepeatWrapping;
+  upholsteryTexture.repeat.set(1.2, 1.2);
+
   return (
     <group {...props} dispose={null}>
       <group position={[-0.553, -1.248, 0.895]} scale={0.631}>
@@ -49,15 +56,42 @@ export const DiningModel = ({ showAnnotation, ...props }) => {
           receiveShadow
           geometry={nodes.Shade.geometry}
           material={materials.Lampshade}
-          position={[0.891, 2.092, -0.789]}
+          position={[0.891, 2.472, -0.789]}
           scale={0.001}
-        />
+        >
+          {lampToggle?.lamp_dining ? (
+            <>
+              <pointLight
+                position={[0, 0, 0]}
+                intensity={0.2}
+                power={10}
+                decay={1}
+                color="#dabd47"
+              />
+              <meshStandardMaterial
+                color={"black"}
+                emissive={"#fdf6e6"}
+                emissiveIntensity={2}
+                toneMapped={true}
+                side={THREE.DoubleSide}
+              />
+              {/* <EffectComposer scale={0.069}>
+                <Bloom
+                  mipmapBlur
+                  luminanceThreshold={1.7}
+                  levels={8}
+                  intensity={0.8}
+                />
+              </EffectComposer> */}
+            </>
+          ) : null}
+        </mesh>
         <mesh
           castShadow
           receiveShadow
           geometry={nodes.Frame001.geometry}
           material={materials["Cast Iron.001"]}
-          position={[0.891, 2.092, -0.789]}
+          position={[0.891, 2.472, -0.789]}
           scale={0.001}
         />
         <mesh
@@ -73,7 +107,7 @@ export const DiningModel = ({ showAnnotation, ...props }) => {
           receiveShadow
           geometry={nodes.Bottom_of_Pendant.geometry}
           material={materials.Metal}
-          position={[0.891, 1.777, -0.79]}
+          position={[0.891, 2.239, -0.79]}
           scale={0.001}
         />
         <mesh
@@ -81,7 +115,7 @@ export const DiningModel = ({ showAnnotation, ...props }) => {
           receiveShadow
           geometry={nodes.Bulb002.geometry}
           material={materials["Light Bulb.001"]}
-          position={[0.878, 2.173, -0.788]}
+          position={[0.878, 2.485, -0.788]}
           rotation={[-Math.PI, 0, 0]}
           scale={0.066}
         >
@@ -90,10 +124,17 @@ export const DiningModel = ({ showAnnotation, ...props }) => {
             receiveShadow
             geometry={nodes.Bulb_Holder001.geometry}
             material={nodes.Bulb_Holder001.material}
-            position={[-0.002, -1.398, 0]}
+            position={[0.15, -1.398, 0]}
             scale={8.978}
           >
-            {currentTexture?.lamp_dining ? (
+            <meshStandardMaterial
+              side={THREE.DoubleSide}
+              color={"white"}
+              emissive={currentTexture?.lamp_dining ? "#fdf6e6" : ""}
+              emissiveIntensity={currentTexture?.lamp_dining ? 2 : ""}
+              toneMapped={currentTexture?.lamp_dining ? true : ""}
+            />
+            {lampToggle?.lamp_dining ? (
               <pointLight position={[0, 0, 0]} intensity={1} color="#fff" />
             ) : null}
             <Html position={[0, 0, 0]}>
@@ -104,12 +145,13 @@ export const DiningModel = ({ showAnnotation, ...props }) => {
                       ? "opacity-100 visible"
                       : "opacity-0 invisible"
                   } duration-300 transition-all ease-in-out annotation cursor-pointer`}
-                  onClick={() =>
-                    setCurrentTexture((prevState) => ({
+                  onClick={() => {
+                    setCamSettings({ ...cameraPositions.default });
+                    setLampToggle((prevState) => ({
                       ...prevState,
-                      lamp_dining: !currentTexture.lamp_dining,
-                    }))
-                  }
+                      lamp_dining: !lampToggle.lamp_dining,
+                    }));
+                  }}
                 />
               </TitleTooltip>
             </Html>
@@ -403,7 +445,9 @@ export const DiningModel = ({ showAnnotation, ...props }) => {
           material={materials["Material.003"]}
           position={[0.221, 0.363, -1.627]}
           rotation={[0, 0.206, 0]}
-        />
+        >
+          <meshStandardMaterial map={upholsteryTexture} />
+        </mesh>
         <mesh
           castShadow
           receiveShadow
@@ -411,7 +455,9 @@ export const DiningModel = ({ showAnnotation, ...props }) => {
           material={materials["Material.003"]}
           position={[1.506, 0.363, -1.627]}
           rotation={[0, -0.334, 0]}
-        />
+        >
+          <meshStandardMaterial map={upholsteryTexture} />
+        </mesh>
         <mesh
           castShadow
           receiveShadow
@@ -419,7 +465,9 @@ export const DiningModel = ({ showAnnotation, ...props }) => {
           material={materials["Material.003"]}
           position={[2.359, 0.363, -0.857]}
           rotation={[0, -1.273, 0]}
-        />
+        >
+          <meshStandardMaterial map={upholsteryTexture} />
+        </mesh>
         <mesh
           castShadow
           receiveShadow
@@ -447,7 +495,9 @@ export const DiningModel = ({ showAnnotation, ...props }) => {
           material={materials["Material.003"]}
           position={[0.256, 0.363, 0.07]}
           rotation={[-Math.PI, 0.48, -Math.PI]}
-        />
+        >
+          <meshStandardMaterial map={upholsteryTexture} />
+        </mesh>
         <mesh
           castShadow
           receiveShadow
@@ -455,7 +505,9 @@ export const DiningModel = ({ showAnnotation, ...props }) => {
           material={materials["Material.003"]}
           position={[-0.616, 0.363, -0.9]}
           rotation={[0, 1.416, 0]}
-        />
+        >
+          <meshStandardMaterial map={upholsteryTexture} />
+        </mesh>
       </group>
     </group>
   );

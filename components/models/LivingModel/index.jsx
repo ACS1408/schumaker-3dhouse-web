@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React from "react";
 import { useGLTF } from "@react-three/drei";
 import { Html } from "@react-three/drei";
 import TitleTooltip from "@/components/TitleTooltip";
@@ -9,18 +9,26 @@ import { TextureLoader } from "three";
 import * as THREE from "three";
 import useHomeRoomWidget from "@/widgets/HomeRoomWidget/useHomeRoomWidget";
 // import { EffectComposer, Bloom } from "@react-three/postprocessing";
+import { cameraPositions } from "@/data/cameraPositions";
+import lampState from "@/atoms/lampState";
 
-export const LivingModel = ({ showAnnotation, ...props }) => {
+export const LivingModel = ({ showAnnotation, camSettings, setCamSettings, ...props }) => {
   const { nodes, materials } = useGLTF("/models/living.glb");
   const [currentTexture, setCurrentTexture] = useRecoilState(textureState);
+  const [lampToggle, setLampToggle] = useRecoilState(lampState);
   const { openUpholsteryTextureModal } = useHomeRoomWidget();
   const upholsteryTexture = useLoader(
     TextureLoader,
-    currentTexture?.upholstery?.image
+    currentTexture?.upholstery_living?.image
   );
 
   upholsteryTexture.wrapS = upholsteryTexture.wrapT = THREE.RepeatWrapping;
   upholsteryTexture.repeat.set(1.2, 1.2);
+
+  const handleClickUpholstery = () => {
+    openUpholsteryTextureModal();
+    setCamSettings({ ...cameraPositions.upholstery });
+  };
 
   return (
     <group {...props} dispose={null}>
@@ -59,7 +67,7 @@ export const LivingModel = ({ showAnnotation, ...props }) => {
                       ? "opacity-100 visible"
                       : "opacity-0 invisible"
                   } duration-300 transition-all ease-in-out annotation cursor-pointer`}
-                  onClick={openUpholsteryTextureModal}
+                  onClick={handleClickUpholstery}
                 />
               </TitleTooltip>
             </Html>
@@ -227,28 +235,19 @@ export const LivingModel = ({ showAnnotation, ...props }) => {
             position={[-0.002, -1.398, 0]}
             scale={8.978}
           />
-          {/* <EffectComposer>
-            <Bloom
-              luminanceThreshold={0}
-              luminanceSmoothing={0.9}
-              height={300}
-            />
-          </EffectComposer> */}
-          {currentTexture?.lamp_living ? (
-            <pointLight position={[0, 0, 0]} intensity={0.4} color="#fff" />
-          ) : null}
           <Html position={[-0.5, -8, 0.5]}>
             <TitleTooltip title="TURN LAMP ON/OFF" orientation="bottom">
               <div
                 className={`${
                   showAnnotation ? "opacity-100 visible" : "opacity-0 invisible"
                 } duration-300 transition-all ease-in-out annotation cursor-pointer`}
-                onClick={() =>
-                  setCurrentTexture((prevState) => ({
+                onClick={() => {
+                  setCamSettings({ ...camSettings });
+                  setLampToggle((prevState) => ({
                     ...prevState,
-                    lamp_living: !currentTexture.lamp_living,
-                  }))
-                }
+                    lamp_living: !lampToggle.lamp_living,
+                  }));
+                }}
               />
             </TitleTooltip>
           </Html>
@@ -284,7 +283,34 @@ export const LivingModel = ({ showAnnotation, ...props }) => {
           material={materials.FabricPlainNaturalSheer007_1K}
           position={[-0.787, 1.433, -2.542]}
           scale={[0.729, 0.5, 0.729]}
-        />
+        >
+          {lampToggle?.lamp_living ? (
+            <>
+              <pointLight
+                position={[0, 0, 0]}
+                intensity={0.2}
+                power={10}
+                decay={1}
+                color="#dabd47"
+              />
+              <meshStandardMaterial
+                color={"black"}
+                emissive={"#fdf6e6"}
+                emissiveIntensity={2}
+                toneMapped={true}
+                side={THREE.DoubleSide}
+              />
+              {/* <EffectComposer scale={0.069}>
+                <Bloom
+                  mipmapBlur
+                  luminanceThreshold={1.7}
+                  levels={8}
+                  intensity={0.8}
+                />
+              </EffectComposer> */}
+            </>
+          ) : null}
+        </mesh>
         <mesh
           castShadow
           receiveShadow

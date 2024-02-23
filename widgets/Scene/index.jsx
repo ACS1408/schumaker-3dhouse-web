@@ -1,21 +1,24 @@
-import React, { useEffect, useState } from "react";
-import { RoomModel } from "@/components/FloatingControllerNav/models/RoomModel";
-// import { useControls } from "leva";
-import {
-  Environment,
-  OrbitControls,
-  PerspectiveCamera,
-} from "@react-three/drei";
-import { DiningModel } from "@/components/FloatingControllerNav/models/DiningModel";
-import { LivingModel } from "@/components/FloatingControllerNav/models/LivingModel";
+import React, { useEffect, useRef, useState } from "react";
+import { RoomModel } from "@/components/models/RoomModel";
+import { OrbitControls, PerspectiveCamera, StatsGl } from "@react-three/drei";
+import { DiningModel } from "@/components/models/DiningModel";
+import { LivingModel } from "@/components/models/LivingModel";
 import { useRecoilState } from "recoil";
 import roomSettingState from "@/atoms/roomSettingState";
 import { useThree } from "@react-three/fiber";
+import gsap from "gsap/all";
+import cameraState from "@/atoms/cameraState";
+import { cameraPositions } from "@/data/cameraPositions";
+import modalState from "@/atoms/modalState";
+// import { useControls } from "leva";
+// import { Perf } from "r3f-perf";
 
 const Scene = ({ setThreeContext }) => {
   const { gl, scene, camera } = useThree();
   const [roomSetting, setRoomSettings] = useRecoilState(roomSettingState);
-
+  const [modalOpen, setModalOpen] = useRecoilState(modalState);
+  const orbitControlRef = useRef();
+  const [camSettings, setCamSettings] = useRecoilState(cameraState);
   const [showAnnotation, setShowAnnotation] = useState(true);
   let timeoutId;
 
@@ -40,107 +43,129 @@ const Scene = ({ setThreeContext }) => {
     setThreeContext({ gl, scene, camera });
   }, [gl, scene, camera]);
 
-  //   const {
-  //     camPosX,
-  //     camPosY,
-  //     camPosZ,
-  //     fov,
-  //     diningScale,
-  //     diningPosX,
-  //     diningPosY,
-  //     diningPosZ,
-  //     livingScale,
-  //     livingPosX,
-  //     livingPosY,
-  //     livingPosZ,
-  //   } = useControls({
+  // const { camPosX, camPosY, camPosZ, camRotateX, camRotateY, camRotateZ } =
+  //   useControls({
   //     camPosX: {
-  //       value: 1,
+  //       value: 1.1,
   //       min: -5,
   //       max: 5,
-  //       step: 0.1,
+  //       step: 0.05,
   //     },
   //     camPosY: {
   //       value: 0,
   //       min: -5,
   //       max: 5,
-  //       step: 0.1,
+  //       step: 0.05,
   //     },
   //     camPosZ: {
-  //       value: -0.5,
-  //       min: -5,
-  //       max: 5,
-  //       step: 0.1,
-  //     },
-  //     fov: {
-  //       value: 60,
-  //       min: 1,
-  //       max: 180,
-  //       step: 1,
-  //     },
-  //     diningScale: {
-  //       value: 0.25,
-  //       min: 0.01,
-  //       max: 1,
-  //       step: 0.01,
-  //     },
-  //     diningPosX: {
-  //       value: 0.25,
+  //       value: -0.4,
   //       min: -5,
   //       max: 5,
   //       step: 0.05,
   //     },
-  //     diningPosY: {
-  //       value: 0.03,
-  //       min: -1,
-  //       max: 1,
+  //     camRotateX: {
+  //       value: 0,
+  //       min: -10,
+  //       max: 10,
   //       step: 0.05,
   //     },
-  //     diningPosZ: {
-  //       value: -0.55,
-  //       min: -1,
-  //       max: 1,
+  //     camRotateY: {
+  //       value: 1.8,
+  //       min: -10,
+  //       max: 10,
   //       step: 0.05,
   //     },
-
-  //     livingScale: {
-  //       value: 0.28,
-  //       min: 0.01,
-  //       max: 1,
-  //       step: 0.01,
-  //     },
-  //     livingPosX: {
-  //       value: 0.25,
-  //       min: -5,
-  //       max: 5,
-  //       step: 0.05,
-  //     },
-  //     livingPosY: {
-  //       value: -0.143,
-  //       min: -1,
-  //       max: 1,
-  //       step: 0.05,
-  //     },
-  //     livingPosZ: {
-  //       value: -0.43,
-  //       min: -1,
-  //       max: 1,
+  //     camRotateZ: {
+  //       value: 0,
+  //       min: -10,
+  //       max: 10,
   //       step: 0.05,
   //     },
   //   });
 
+  useEffect(() => {
+    if (orbitControlRef?.current) {
+      orbitControlRef.current.enabled = false;
+    }
+    gsap.to(camera.position, {
+      x: camSettings?.position?.x,
+      y: camSettings?.position?.y,
+      z: camSettings?.position?.z,
+      duration: 1,
+      ease: "expo.out",
+      onStart: () => {
+        if (orbitControlRef?.current) {
+          orbitControlRef.current.enabled = false;
+        }
+      },
+      onComplete: () => {
+        if (orbitControlRef?.current) {
+          orbitControlRef.current.enabled = true;
+        }
+      },
+    });
+    gsap.to(camera.rotation, {
+      x: camSettings?.rotation?.x,
+      y: camSettings?.rotation?.y,
+      z: camSettings?.rotation?.z,
+      duration: 1,
+      ease: "expo.out",
+      onStart: () => {
+        if (orbitControlRef?.current) {
+          orbitControlRef.current.enabled = false;
+        }
+      },
+      onComplete: () => {
+        if (orbitControlRef?.current) {
+          orbitControlRef.current.enabled = true;
+        }
+      },
+    });
+  }, [camSettings]);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setCamSettings({ ...cameraPositions.default });
+    }, 500);
+  }, []);
+
+  useEffect(() => {
+    if (
+      (modalOpen.settings || !modalOpen.settings) &&
+      !modalOpen.wall &&
+      !modalOpen.rug &&
+      !modalOpen.curtain &&
+      !modalOpen.upholstery
+    ) {
+      setCamSettings({ ...cameraPositions.default });
+    }
+  }, [modalOpen]);
+
   return (
     <>
-      <PerspectiveCamera makeDefault position={[1.15, 0, -0.5]} fov={60} />
-      {/* <PerspectiveCamera
+      {/* <Perf position="bottom-left" /> */}
+      <StatsGl />
+      <PerspectiveCamera
         makeDefault
-        position={[camPosX, camPosY, camPosZ]}
-        fov={fov}
-      /> */}
-      <OrbitControls />
+        position={[
+          camSettings?.position?.x,
+          camSettings?.position?.y,
+          camSettings?.position?.z,
+        ]}
+        rotation={[
+          camSettings?.rotation?.x,
+          camSettings?.rotation?.y,
+          camSettings?.rotation?.z,
+        ]}
+        fov={60}
+      />
+      <OrbitControls enablePan={false} ref={orbitControlRef} />
       <directionalLight position={[5, -2, 4]} />
       <ambientLight intensity={0.7} />
-      <RoomModel showAnnotation={showAnnotation} />
+      <RoomModel
+        showAnnotation={showAnnotation}
+        setCamSettings={setCamSettings}
+      />
       {roomSetting?.layout?.value === "dining" ? (
         <>
           <DiningModel
@@ -148,27 +173,18 @@ const Scene = ({ setThreeContext }) => {
             position={[0.25, 0.03, -0.55]}
             showAnnotation={showAnnotation}
           />
-          {/* <DiningModel
-            scale={diningScale}
-            position={[diningPosX, diningPosY, diningPosZ]}
-          /> */}
         </>
       ) : (
         <>
-          {/* <LivingModel
-          scale={livingScale}
-          position={[livingPosX, livingPosY, livingPosZ]}
-        /> */}
           <LivingModel
-            scale={0.28}
+            scale={0.245}
             position={[0.25, -0.143, -0.43]}
             showAnnotation={showAnnotation}
+            camSettings={camSettings}
+            setCamSettings={setCamSettings}
           />
         </>
       )}
-      {/* <Environment preset="sunset" /> */}
-      {/* <axesHelper args={[5]} />
-      <gridHelper /> */}
     </>
   );
 };

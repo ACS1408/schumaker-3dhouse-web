@@ -1,6 +1,9 @@
 import Image from "next/image";
 import React from "react";
 import TitleTooltip from "../TitleTooltip";
+import cameraState from "@/atoms/cameraState";
+import { useRecoilState } from "recoil";
+import { cameraPositions } from "@/data/cameraPositions";
 
 const FloatingControllerNav = ({
   openSettingsModal,
@@ -10,6 +13,8 @@ const FloatingControllerNav = ({
   openUpholsteryTextureModal,
   takeSnapShot,
 }) => {
+  const [camSettings, setCamSettings] = useRecoilState(cameraState);
+
   const nav = {
     default:
       "bg-[#2d2d2d1a] backdrop-blur-sm border border-[#FCFBF6] rounded-xl flex justify-center fixed bottom-6 left-1/2 -translate-x-1/2",
@@ -27,6 +32,23 @@ const FloatingControllerNav = ({
       hover:
         "transition-all ease-in-out duration-300 will-change-transform hover:scale-110 hover:bg-[#2d2d2d4a]",
     },
+  };
+
+  const handleClickWall = () => {
+    openWallTextureModal();
+    setCamSettings({ ...cameraPositions?.wall });
+  };
+  const handleClickRug = () => {
+    openRugTextureModal();
+    setCamSettings({ ...cameraPositions.rug });
+  };
+  const handleClickCurtain = () => {
+    openCurtainTextureModal();
+    setCamSettings({ ...cameraPositions.curtain });
+  };
+  const handleClickUpholstery = () => {
+    openUpholsteryTextureModal();
+    setCamSettings({ ...cameraPositions.upholstery });
   };
 
   return (
@@ -55,7 +77,7 @@ const FloatingControllerNav = ({
           <TitleTooltip title="CHANGE WALLCOVERING" orientation="top">
             <button
               className={`item ${nav.item.default} ${nav.item.hover}`}
-              onClick={openWallTextureModal}
+              onClick={handleClickWall}
             >
               <Image
                 src="/icons/icon-wallpaper.svg"
@@ -68,7 +90,7 @@ const FloatingControllerNav = ({
           <TitleTooltip title="CHANGE RUG" orientation="top">
             <button
               className={`item ${nav.item.default} ${nav.item.hover}`}
-              onClick={openRugTextureModal}
+              onClick={handleClickRug}
             >
               <Image
                 src="/icons/icon-rug.svg"
@@ -81,7 +103,7 @@ const FloatingControllerNav = ({
           <TitleTooltip title="CHANGE CURTAIN" orientation="top">
             <button
               className={`item ${nav.item.default} ${nav.item.hover}`}
-              onClick={openCurtainTextureModal}
+              onClick={handleClickCurtain}
             >
               <Image
                 src="/icons/icon-curtain.svg"
@@ -94,7 +116,7 @@ const FloatingControllerNav = ({
           <TitleTooltip title="CHANGE UPHOLSTERY" orientation="top">
             <button
               className={`item ${nav.item.default} ${nav.item.hover}`}
-              onClick={openUpholsteryTextureModal}
+              onClick={handleClickUpholstery}
             >
               <Image
                 src="/icons/icon-sofa.svg"
