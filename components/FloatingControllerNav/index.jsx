@@ -4,6 +4,7 @@ import TitleTooltip from "../TitleTooltip";
 import cameraState from "@/atoms/cameraState";
 import { useRecoilState } from "recoil";
 import { cameraPositions } from "@/data/cameraPositions";
+import roomSettingState from "@/atoms/roomSettingState";
 
 const FloatingControllerNav = ({
   openSettingsModal,
@@ -14,6 +15,7 @@ const FloatingControllerNav = ({
   takeSnapShot,
 }) => {
   const [camSettings, setCamSettings] = useRecoilState(cameraState);
+  const [roomSetting, setRoomSettings] = useRecoilState(roomSettingState);
 
   const nav = {
     default:
@@ -48,7 +50,11 @@ const FloatingControllerNav = ({
   };
   const handleClickUpholstery = () => {
     openUpholsteryTextureModal();
-    setCamSettings({ ...cameraPositions.upholstery });
+    if (roomSetting?.layout?.value === "living") {
+      setCamSettings({ ...cameraPositions.upholstery_living });
+    } else {
+      setCamSettings({ ...cameraPositions.upholstery_dining });
+    }
   };
 
   return (

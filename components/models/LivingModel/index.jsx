@@ -11,10 +11,12 @@ import useHomeRoomWidget from "@/widgets/HomeRoomWidget/useHomeRoomWidget";
 // import { EffectComposer, Bloom } from "@react-three/postprocessing";
 import { cameraPositions } from "@/data/cameraPositions";
 import lampState from "@/atoms/lampState";
+import cameraState from "@/atoms/cameraState";
 
-export const LivingModel = ({ showAnnotation, camSettings, setCamSettings, ...props }) => {
+export const LivingModel = ({ showAnnotation, ...props }) => {
   const { nodes, materials } = useGLTF("/models/living.glb");
   const [currentTexture, setCurrentTexture] = useRecoilState(textureState);
+  const [camSettings, setCamSettings] = useRecoilState(cameraState);
   const [lampToggle, setLampToggle] = useRecoilState(lampState);
   const { openUpholsteryTextureModal } = useHomeRoomWidget();
   const upholsteryTexture = useLoader(
@@ -23,11 +25,11 @@ export const LivingModel = ({ showAnnotation, camSettings, setCamSettings, ...pr
   );
 
   upholsteryTexture.wrapS = upholsteryTexture.wrapT = THREE.RepeatWrapping;
-  upholsteryTexture.repeat.set(1.2, 1.2);
+  upholsteryTexture.repeat.set(1, -1);
 
   const handleClickUpholstery = () => {
     openUpholsteryTextureModal();
-    setCamSettings({ ...cameraPositions.upholstery });
+    setCamSettings({ ...cameraPositions.upholstery_living });
   };
 
   return (

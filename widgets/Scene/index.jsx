@@ -10,6 +10,14 @@ import gsap from "gsap/all";
 import cameraState from "@/atoms/cameraState";
 import { cameraPositions } from "@/data/cameraPositions";
 import modalState from "@/atoms/modalState";
+import {
+  Bloom,
+  DepthOfField,
+  EffectComposer,
+  Noise,
+  SSAO,
+} from "@react-three/postprocessing";
+import { BlendFunction } from "postprocessing";
 // import { useControls } from "leva";
 // import { Perf } from "r3f-perf";
 
@@ -19,6 +27,7 @@ const Scene = ({ setThreeContext }) => {
   const [modalOpen, setModalOpen] = useRecoilState(modalState);
   const orbitControlRef = useRef();
   const [camSettings, setCamSettings] = useRecoilState(cameraState);
+  const [isOrbitControlEnabled, setIsOrbitControlEnabled] = useState(true);
   const [showAnnotation, setShowAnnotation] = useState(true);
   let timeoutId;
 
@@ -84,60 +93,47 @@ const Scene = ({ setThreeContext }) => {
   //   });
 
   useEffect(() => {
-    if (orbitControlRef?.current) {
-      orbitControlRef.current.enabled = false;
-    }
-    gsap.to(camera.position, {
+    const tl = gsap.timeline();
+    tl.to(camera.position, {
       x: camSettings?.position?.x,
       y: camSettings?.position?.y,
       z: camSettings?.position?.z,
       duration: 1,
       ease: "expo.out",
-      onStart: () => {
-        if (orbitControlRef?.current) {
-          orbitControlRef.current.enabled = false;
-        }
-      },
-      onComplete: () => {
-        if (orbitControlRef?.current) {
-          orbitControlRef.current.enabled = true;
-        }
-      },
-    });
-    gsap.to(camera.rotation, {
-      x: camSettings?.rotation?.x,
-      y: camSettings?.rotation?.y,
-      z: camSettings?.rotation?.z,
-      duration: 1,
-      ease: "expo.out",
-      onStart: () => {
-        if (orbitControlRef?.current) {
-          orbitControlRef.current.enabled = false;
-        }
-      },
-      onComplete: () => {
-        if (orbitControlRef?.current) {
-          orbitControlRef.current.enabled = true;
-        }
-      },
-    });
+    })
+      .to(
+        camera.rotation,
+        {
+          x: camSettings?.rotation?.x,
+          y: camSettings?.rotation?.y,
+          z: camSettings?.rotation?.z,
+          duration: 1,
+          ease: "expo.out",
+        },
+        "<"
+      )
+      .to(
+        camera,
+        {
+          fov: camSettings?.fov,
+          duration: 1,
+          ease: "expo.out",
+        },
+        "<"
+      );
   }, [camSettings]);
 
   useEffect(() => {
-    setTimeout(() => {
-      setCamSettings({ ...cameraPositions.default });
-    }, 500);
-  }, []);
-
-  useEffect(() => {
     if (
-      (modalOpen.settings || !modalOpen.settings) &&
       !modalOpen.wall &&
       !modalOpen.rug &&
       !modalOpen.curtain &&
       !modalOpen.upholstery
     ) {
+      setIsOrbitControlEnabled(true);
       setCamSettings({ ...cameraPositions.default });
+    } else {
+      setIsOrbitControlEnabled(false);
     }
   }, [modalOpen]);
 
@@ -145,6 +141,11 @@ const Scene = ({ setThreeContext }) => {
     <>
       {/* <Perf position="bottom-left" /> */}
       <StatsGl />
+      <EffectComposer>
+        <Noise premultiply blendFunction={BlendFunction.SKIP} />
+        <DepthOfField focusDistance={2} focalLength={0.1} bokehScale={0.6} />
+        <Bloom mipmapBlur luminanceThreshold={1.4} levels={8} intensity={0.7} />
+      </EffectComposer>
       <PerspectiveCamera
         makeDefault
         position={[
@@ -157,20 +158,25 @@ const Scene = ({ setThreeContext }) => {
           camSettings?.rotation?.y,
           camSettings?.rotation?.z,
         ]}
-        fov={60}
+        fov={camSettings?.fov}
       />
-      <OrbitControls enablePan={false} ref={orbitControlRef} />
-      <directionalLight position={[5, -2, 4]} />
-      <ambientLight intensity={0.7} />
-      <RoomModel
-        showAnnotation={showAnnotation}
-        setCamSettings={setCamSettings}
-      />
+      {isOrbitControlEnabled ? (
+        <OrbitControls enablePan={false} ref={orbitControlRef} />
+      ) : null}
+      <directionalLight position={[5, -2, 4]} intensity={1.3} />
+      <ambientLight intensity={1} />
+      {/* <pointLight
+        intensity={0.4}
+        color={"#f00"}
+        position={[0, 0, 0]}
+        rotation={[0, 0, 0]}
+      /> */}
+      <RoomModel position={[0, 0, 0.28]} showAnnotation={showAnnotation} />
       {roomSetting?.layout?.value === "dining" ? (
         <>
           <DiningModel
-            scale={0.25}
-            position={[0.25, 0.03, -0.55]}
+            scale={0.27}
+            position={[0.22, 0.055, -0.25]}
             showAnnotation={showAnnotation}
           />
         </>
@@ -178,10 +184,8 @@ const Scene = ({ setThreeContext }) => {
         <>
           <LivingModel
             scale={0.245}
-            position={[0.25, -0.143, -0.43]}
+            position={[0.27, -0.143, -0.19]}
             showAnnotation={showAnnotation}
-            camSettings={camSettings}
-            setCamSettings={setCamSettings}
           />
         </>
       )}

@@ -9,10 +9,13 @@ import { TextureLoader } from "three";
 import useHomeRoomWidget from "@/widgets/HomeRoomWidget/useHomeRoomWidget";
 import * as THREE from "three";
 import lampState from "@/atoms/lampState";
+import cameraState from "@/atoms/cameraState";
+import { cameraPositions } from "@/data/cameraPositions";
 
 export const DiningModel = ({ showAnnotation, ...props }) => {
   const { nodes, materials } = useGLTF("/models/dinning.glb");
   const [currentTexture, setCurrentTexture] = useRecoilState(textureState);
+  const [camSettings, setCamSettings] = useRecoilState(cameraState);
   const [lampToggle, setLampToggle] = useRecoilState(lampState);
   const { openUpholsteryTextureModal } = useHomeRoomWidget();
   const upholsteryTexture = useLoader(
@@ -22,6 +25,11 @@ export const DiningModel = ({ showAnnotation, ...props }) => {
 
   upholsteryTexture.wrapS = upholsteryTexture.wrapT = THREE.RepeatWrapping;
   upholsteryTexture.repeat.set(1.2, 1.2);
+
+  const handleClickUpholstery = () => {
+    openUpholsteryTextureModal();
+    setCamSettings({ ...cameraPositions.upholstery_dining });
+  };
 
   return (
     <group {...props} dispose={null}>
@@ -75,14 +83,6 @@ export const DiningModel = ({ showAnnotation, ...props }) => {
                 toneMapped={true}
                 side={THREE.DoubleSide}
               />
-              {/* <EffectComposer scale={0.069}>
-                <Bloom
-                  mipmapBlur
-                  luminanceThreshold={1.7}
-                  levels={8}
-                  intensity={0.8}
-                />
-              </EffectComposer> */}
             </>
           ) : null}
         </mesh>
@@ -483,7 +483,7 @@ export const DiningModel = ({ showAnnotation, ...props }) => {
                 className={`${
                   showAnnotation ? "opacity-100 visible" : "opacity-0 invisible"
                 } duration-300 transition-all ease-in-out annotation cursor-pointer`}
-                onClick={openUpholsteryTextureModal}
+                onClick={handleClickUpholstery}
               />
             </TitleTooltip>
           </Html>

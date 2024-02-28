@@ -10,11 +10,13 @@ import * as THREE from "three";
 import useHomeRoomWidget from "@/widgets/HomeRoomWidget/useHomeRoomWidget";
 import roomSettingState from "@/atoms/roomSettingState";
 import { cameraPositions } from "@/data/cameraPositions";
+import cameraState from "@/atoms/cameraState";
 
-export const RoomModel = ({ showAnnotation, setCamSettings, ...props }) => {
+export const RoomModel = ({ showAnnotation, ...props }) => {
   const { nodes, materials } = useGLTF("/models/room.glb");
   const [currentTexture, setCurrentTexture] = useRecoilState(textureState);
   const [roomSettings, setRoomSettings] = useRecoilState(roomSettingState);
+  const [camSettings, setCamSettings] = useRecoilState(cameraState);
 
   const environment = useLoader(
     TextureLoader,
@@ -37,10 +39,10 @@ export const RoomModel = ({ showAnnotation, setCamSettings, ...props }) => {
   wallTexture.repeat.set(4, -4);
 
   rugTexture.wrapS = rugTexture.wrapT = THREE.RepeatWrapping;
-  rugTexture.repeat.set(1, 1);
+  rugTexture.repeat.set(1, -1);
 
   curtainTexture.wrapS = curtainTexture.wrapT = THREE.RepeatWrapping;
-  curtainTexture.repeat.set(1, 1);
+  curtainTexture.repeat.set(2, -2);
 
   const handleClickWall = () => {
     openWallTextureModal();
