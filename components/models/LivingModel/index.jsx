@@ -8,7 +8,6 @@ import { useLoader } from "@react-three/fiber";
 import { TextureLoader } from "three";
 import * as THREE from "three";
 import useHomeRoomWidget from "@/widgets/HomeRoomWidget/useHomeRoomWidget";
-// import { EffectComposer, Bloom } from "@react-three/postprocessing";
 import { cameraPositions } from "@/data/cameraPositions";
 import lampState from "@/atoms/lampState";
 import cameraState from "@/atoms/cameraState";
@@ -302,14 +301,6 @@ export const LivingModel = ({ showAnnotation, ...props }) => {
                 toneMapped={true}
                 side={THREE.DoubleSide}
               />
-              {/* <EffectComposer scale={0.069}>
-                <Bloom
-                  mipmapBlur
-                  luminanceThreshold={1.7}
-                  levels={8}
-                  intensity={0.8}
-                />
-              </EffectComposer> */}
             </>
           ) : null}
         </mesh>

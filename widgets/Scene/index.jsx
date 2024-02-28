@@ -5,7 +5,7 @@ import { DiningModel } from "@/components/models/DiningModel";
 import { LivingModel } from "@/components/models/LivingModel";
 import { useRecoilState } from "recoil";
 import roomSettingState from "@/atoms/roomSettingState";
-import { useThree } from "@react-three/fiber";
+import { useFrame, useThree } from "@react-three/fiber";
 import gsap from "gsap/all";
 import cameraState from "@/atoms/cameraState";
 import { cameraPositions } from "@/data/cameraPositions";
@@ -15,11 +15,9 @@ import {
   DepthOfField,
   EffectComposer,
   Noise,
-  SSAO,
 } from "@react-three/postprocessing";
 import { BlendFunction } from "postprocessing";
 // import { useControls } from "leva";
-// import { Perf } from "r3f-perf";
 
 const Scene = ({ setThreeContext }) => {
   const { gl, scene, camera } = useThree();
@@ -139,7 +137,6 @@ const Scene = ({ setThreeContext }) => {
 
   return (
     <>
-      {/* <Perf position="bottom-left" /> */}
       <StatsGl />
       <EffectComposer>
         <Noise premultiply blendFunction={BlendFunction.SKIP} />
@@ -161,16 +158,22 @@ const Scene = ({ setThreeContext }) => {
         fov={camSettings?.fov}
       />
       {isOrbitControlEnabled ? (
-        <OrbitControls enablePan={false} ref={orbitControlRef} />
+        <OrbitControls
+          enablePan={false}
+          ref={orbitControlRef}
+          maxDistance={1.2}
+          minDistance={0.43}
+          dampingFactor={0.08}
+        />
       ) : null}
-      <directionalLight position={[5, -2, 4]} intensity={1.3} />
-      <ambientLight intensity={1} />
-      {/* <pointLight
-        intensity={0.4}
-        color={"#f00"}
-        position={[0, 0, 0]}
-        rotation={[0, 0, 0]}
-      /> */}
+      <hemisphereLight
+        position={[5, -2, 4]}
+        intensity={2}
+        skyColor={"#ffffbb"}
+        groundColor={"#080820"}
+      />
+      {/* <ambientLight intensity={0.7} color={"#fff"} /> */}
+      <pointLight color={"#fff"} intensity={1} position={[-0.5, -0.2, 0.7]} />
       <RoomModel position={[0, 0, 0.28]} showAnnotation={showAnnotation} />
       {roomSetting?.layout?.value === "dining" ? (
         <>
