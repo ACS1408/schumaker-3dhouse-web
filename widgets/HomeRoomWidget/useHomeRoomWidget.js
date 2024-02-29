@@ -2,21 +2,35 @@ import { useEffect, useState } from "react";
 import { saveAs } from "file-saver";
 import { useRecoilState } from "recoil";
 import modalState from "@/atoms/modalState";
+import { cameraPositions } from "@/data/cameraPositions";
+import cameraState from "@/atoms/cameraState";
 
 const useHomeRoomWidget = () => {
   const [isModalOpen, setIsModalOpen] = useRecoilState(modalState);
+  const [camSettings, setCamSettings] = useRecoilState(cameraState);
+  const [modalOpen, setModalOpen] = useRecoilState(modalState);
   const [threeContext, setThreeContext] = useState({});
 
   const takeSnapShot = () => {
     const { gl, scene, camera } = threeContext;
-    gl.render(scene, camera);
-    const screenshot = gl.domElement.toDataURL();
-    const date = new Date();
-    const fileName = `output-${date.getFullYear()}${
-      date.getMonth() + 1
-    }${date.getDate()}${date.getHours()}${date.getMinutes()}${date.getSeconds()}.png`;
-    let file = convertBase64ToFile(screenshot, fileName);
-    saveAs(file, fileName);
+    setCamSettings({ ...cameraPositions.default });
+    setModalOpen({
+      settings: false,
+      wall: false,
+      rug: false,
+      curtain: false,
+      upholstery: false,
+    });
+    setTimeout(() => {
+      gl.render(scene, camera);
+      const screenshot = gl.domElement.toDataURL();
+      const date = new Date();
+      const fileName = `output-${date.getFullYear()}${
+        date.getMonth() + 1
+      }${date.getDate()}${date.getHours()}${date.getMinutes()}${date.getSeconds()}.png`;
+      let file = convertBase64ToFile(screenshot, fileName);
+      saveAs(file, fileName);
+    }, 1000);
   };
 
   const convertBase64ToFile = (base64String, fileName) => {

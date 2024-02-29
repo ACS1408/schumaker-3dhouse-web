@@ -5,19 +5,19 @@ import { DiningModel } from "@/components/models/DiningModel";
 import { LivingModel } from "@/components/models/LivingModel";
 import { useRecoilState } from "recoil";
 import roomSettingState from "@/atoms/roomSettingState";
-import { useFrame, useThree } from "@react-three/fiber";
+import { useThree } from "@react-three/fiber";
 import gsap from "gsap/all";
 import cameraState from "@/atoms/cameraState";
 import { cameraPositions } from "@/data/cameraPositions";
 import modalState from "@/atoms/modalState";
-import {
-  Bloom,
-  DepthOfField,
-  EffectComposer,
-  Noise,
-} from "@react-three/postprocessing";
-import { BlendFunction } from "postprocessing";
-// import { useControls } from "leva";
+// import {
+//   Bloom,
+//   DepthOfField,
+//   EffectComposer,
+//   Noise,
+// } from "@react-three/postprocessing";
+// import { BlendFunction } from "postprocessing";
+// // import { useControls } from "leva";
 
 const Scene = ({ setThreeContext }) => {
   const { gl, scene, camera } = useThree();
@@ -93,18 +93,14 @@ const Scene = ({ setThreeContext }) => {
   useEffect(() => {
     const tl = gsap.timeline();
     tl.to(camera.position, {
-      x: camSettings?.position?.x,
-      y: camSettings?.position?.y,
-      z: camSettings?.position?.z,
+      ...camSettings?.position,
       duration: 1,
       ease: "expo.out",
     })
       .to(
         camera.rotation,
         {
-          x: camSettings?.rotation?.x,
-          y: camSettings?.rotation?.y,
-          z: camSettings?.rotation?.z,
+          ...camSettings?.rotation,
           duration: 1,
           ease: "expo.out",
         },
@@ -138,23 +134,15 @@ const Scene = ({ setThreeContext }) => {
   return (
     <>
       <StatsGl />
-      <EffectComposer>
+      {/* <EffectComposer>
         <Noise premultiply blendFunction={BlendFunction.SKIP} />
         <DepthOfField focusDistance={2} focalLength={0.1} bokehScale={0.6} />
         <Bloom mipmapBlur luminanceThreshold={1.4} levels={8} intensity={0.7} />
-      </EffectComposer>
+      </EffectComposer> */}
       <PerspectiveCamera
         makeDefault
-        position={[
-          camSettings?.position?.x,
-          camSettings?.position?.y,
-          camSettings?.position?.z,
-        ]}
-        rotation={[
-          camSettings?.rotation?.x,
-          camSettings?.rotation?.y,
-          camSettings?.rotation?.z,
-        ]}
+        position={Object?.values(camSettings?.position)}
+        rotation={Object?.values(camSettings?.rotation)}
         fov={camSettings?.fov}
       />
       {isOrbitControlEnabled ? (
@@ -168,12 +156,17 @@ const Scene = ({ setThreeContext }) => {
       ) : null}
       <hemisphereLight
         position={[5, -2, 4]}
-        intensity={2}
+        intensity={1.2}
         skyColor={"#ffffbb"}
         groundColor={"#080820"}
+        castShadow
       />
-      {/* <ambientLight intensity={0.7} color={"#fff"} /> */}
-      <pointLight color={"#fff"} intensity={1} position={[-0.5, -0.2, 0.7]} />
+      <pointLight
+        color={"#dcccb5"}
+        intensity={1}
+        position={[-0.5, -0.15, 0.7]}
+        castShadow
+      />
       <RoomModel position={[0, 0, 0.28]} showAnnotation={showAnnotation} />
       {roomSetting?.layout?.value === "dining" ? (
         <>
