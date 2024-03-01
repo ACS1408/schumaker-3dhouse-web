@@ -61,8 +61,6 @@ export const RoomModel = ({ showAnnotation, ...props }) => {
     <group {...props} dispose={null}>
       <group position={[0.076, -0.284, -0.292]} scale={0.169}>
         <mesh
-          castShadow
-          receiveShadow
           geometry={nodes.Background_Environment.geometry}
           material={materials["Beach View.001"]}
           position={[-0.566, 1.683, 1.735]}

@@ -17,7 +17,7 @@ import modalState from "@/atoms/modalState";
 //   Noise,
 // } from "@react-three/postprocessing";
 // import { BlendFunction } from "postprocessing";
-// // import { useControls } from "leva";
+// import { useControls } from "leva";
 
 const Scene = ({ setThreeContext }) => {
   const { gl, scene, camera } = useThree();
@@ -50,41 +50,29 @@ const Scene = ({ setThreeContext }) => {
     setThreeContext({ gl, scene, camera });
   }, [gl, scene, camera]);
 
-  // const { camPosX, camPosY, camPosZ, camRotateX, camRotateY, camRotateZ } =
+  // const { posX, posY, posZ, intensity } =
   //   useControls({
-  //     camPosX: {
-  //       value: 1.1,
-  //       min: -5,
-  //       max: 5,
+  //     posX: {
+  //       value: -54.7,
+  //       min: -100,
+  //       max: 100,
   //       step: 0.05,
   //     },
-  //     camPosY: {
-  //       value: 0,
-  //       min: -5,
-  //       max: 5,
+  //     posY: {
+  //       value: 20.5,
+  //       min: -100,
+  //       max: 100,
   //       step: 0.05,
   //     },
-  //     camPosZ: {
-  //       value: -0.4,
-  //       min: -5,
-  //       max: 5,
+  //     posZ: {
+  //       value: 6.55,
+  //       min: -100,
+  //       max: 100,
   //       step: 0.05,
   //     },
-  //     camRotateX: {
-  //       value: 0,
-  //       min: -10,
-  //       max: 10,
-  //       step: 0.05,
-  //     },
-  //     camRotateY: {
-  //       value: 1.8,
-  //       min: -10,
-  //       max: 10,
-  //       step: 0.05,
-  //     },
-  //     camRotateZ: {
-  //       value: 0,
-  //       min: -10,
+  //     intensity: {
+  //       value: 2.9,
+  //       min: 0,
   //       max: 10,
   //       step: 0.05,
   //     },
@@ -161,11 +149,20 @@ const Scene = ({ setThreeContext }) => {
         groundColor={"#080820"}
         castShadow
       />
-      <pointLight
+      <spotLight
         color={"#dcccb5"}
         intensity={1}
         position={[-0.5, -0.15, 0.7]}
         castShadow
+        angle={7.3}
+        shadow-normalBias={0.05}
+      />
+      <directionalLight
+        position={[-54.7, 20.5, 6.55]}
+        shadow-normalBias={0.05}
+        castShadow
+        color={"#dcccb5"}
+        intensity={2.9}
       />
       <RoomModel position={[0, 0, 0.28]} showAnnotation={showAnnotation} />
       {roomSetting?.layout?.value === "dining" ? (

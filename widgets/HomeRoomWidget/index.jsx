@@ -42,6 +42,7 @@ const HomeRoomWidget = () => {
       </div>
       <Canvas
         shadowMap
+        shadows
         colorManagement
         className="!fixed inset-0 !w-full !h-[100svh] z-[0]"
         gl={{ preserveDrawingBuffer: true }}
