@@ -207,8 +207,8 @@ export const RoomModel = ({ showAnnotation, ...props }) => {
           scale={0.001}
         />
         <mesh
-          castShadow
-          receiveShadow
+          // castShadow
+          // receiveShadow
           geometry={nodes.Left_Curtain_Big.geometry}
           material={materials.Curtains}
           position={[-2.354, 2.602, 1.511]}
@@ -223,8 +223,8 @@ export const RoomModel = ({ showAnnotation, ...props }) => {
           />
         </mesh>
         <mesh
-          castShadow
-          receiveShadow
+          // castShadow
+          // receiveShadow
           geometry={nodes.Left_Curtain_Small.geometry}
           material={materials.Curtains}
           position={[2.906, 2.602, 3.085]}
@@ -239,8 +239,8 @@ export const RoomModel = ({ showAnnotation, ...props }) => {
           />
         </mesh>
         <mesh
-          castShadow
-          receiveShadow
+          // castShadow
+          // receiveShadow
           geometry={nodes.Right_Curtain_Big.geometry}
           material={materials.Curtains}
           position={[-2.354, 2.602, -1.521]}
@@ -265,8 +265,8 @@ export const RoomModel = ({ showAnnotation, ...props }) => {
           />
         </mesh>
         <mesh
-          castShadow
-          receiveShadow
+          // castShadow
+          // receiveShadow
           geometry={nodes.Right_Curtain_Small.geometry}
           material={materials.Curtains}
           position={[-1.107, 2.602, 3.085]}

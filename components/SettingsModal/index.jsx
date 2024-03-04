@@ -43,7 +43,7 @@ const SettingsModal = ({ closeSettingsModal, show }) => {
             label: "/icons/icon-afternoon.svg",
             value: "afternoon",
           },
-          { icon: true, label: "/icons/icon-evening.svg", value: "evening" },
+          { icon: true, label: "/icons/icon-evening.svg", value: "night" },
         ]}
         selectedOption={roomSetting?.time_of_day}
         onChange={(e) =>

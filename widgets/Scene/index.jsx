@@ -10,17 +10,21 @@ import gsap from "gsap/all";
 import cameraState from "@/atoms/cameraState";
 import { cameraPositions } from "@/data/cameraPositions";
 import modalState from "@/atoms/modalState";
-// import {
-//   Bloom,
-//   DepthOfField,
-//   EffectComposer,
-//   Noise,
-// } from "@react-three/postprocessing";
+import * as THREE from "three";
+import {
+  Bloom,
+  DepthOfField,
+  EffectComposer,
+  // Noise,
+  SMAA,
+} from "@react-three/postprocessing";
+import { lightSettings } from "@/data/lightSettings";
 // import { BlendFunction } from "postprocessing";
 // import { useControls } from "leva";
 
 const Scene = ({ setThreeContext }) => {
   const { gl, scene, camera } = useThree();
+  const dLightRef = useRef();
   const [roomSetting, setRoomSettings] = useRecoilState(roomSettingState);
   const [modalOpen, setModalOpen] = useRecoilState(modalState);
   const orbitControlRef = useRef();
@@ -50,33 +54,32 @@ const Scene = ({ setThreeContext }) => {
     setThreeContext({ gl, scene, camera });
   }, [gl, scene, camera]);
 
-  // const { posX, posY, posZ, intensity } =
-  //   useControls({
-  //     posX: {
-  //       value: -54.7,
-  //       min: -100,
-  //       max: 100,
-  //       step: 0.05,
-  //     },
-  //     posY: {
-  //       value: 20.5,
-  //       min: -100,
-  //       max: 100,
-  //       step: 0.05,
-  //     },
-  //     posZ: {
-  //       value: 6.55,
-  //       min: -100,
-  //       max: 100,
-  //       step: 0.05,
-  //     },
-  //     intensity: {
-  //       value: 2.9,
-  //       min: 0,
-  //       max: 10,
-  //       step: 0.05,
-  //     },
-  //   });
+  // const { posX, posY, posZ, intensity } = useControls({
+  //   posX: {
+  //     value: -62.0,
+  //     min: -100,
+  //     max: 100,
+  //     step: 0.05,
+  //   },
+  //   posY: {
+  //     value: 6.3,
+  //     min: -100,
+  //     max: 100,
+  //     step: 0.05,
+  //   },
+  //   posZ: {
+  //     value: 32.6,
+  //     min: -100,
+  //     max: 100,
+  //     step: 0.05,
+  //   },
+  //   intensity: {
+  //     value: 10,
+  //     min: 0,
+  //     max: 10,
+  //     step: 0.05,
+  //   },
+  // });
 
   useEffect(() => {
     const tl = gsap.timeline();
@@ -119,14 +122,70 @@ const Scene = ({ setThreeContext }) => {
     }
   }, [modalOpen]);
 
+  useEffect(() => {
+    const morningColor = new THREE.Color(lightSettings.morning.color);
+    const afternoonColor = new THREE.Color(lightSettings.afternoon.color);
+    const nightColor = new THREE.Color(lightSettings.night.color);
+    const tl = gsap.timeline();
+    roomSetting?.time_of_day?.value === "morning"
+      ? tl
+          .to(dLightRef?.current?.position, {
+            x: lightSettings?.morning?.position?.x,
+            duration: 1,
+          })
+          .to(
+            dLightRef?.current?.color,
+            {
+              ...morningColor,
+              duration: 1,
+            },
+            "<"
+          )
+      : roomSetting?.time_of_day?.value === "afternoon"
+      ? tl
+          .to(dLightRef?.current?.position, {
+            x: lightSettings?.afternoon?.position?.x,
+            duration: 1,
+          })
+          .to(
+            dLightRef?.current?.color,
+            {
+              ...afternoonColor,
+              duration: 1,
+            },
+            "<"
+          )
+      : tl
+          .to(dLightRef?.current?.position, {
+            x: lightSettings?.night?.position?.x,
+            duration: 1,
+          })
+          .to(
+            dLightRef?.current?.color,
+            {
+              ...nightColor,
+              duration: 1,
+            },
+            "<"
+          );
+    dLightRef.current.updateMatrixWorld();
+  }, [roomSetting]);
+
   return (
     <>
       <StatsGl />
-      {/* <EffectComposer>
-        <Noise premultiply blendFunction={BlendFunction.SKIP} />
+      <EffectComposer>
+        {/* <Noise premultiply blendFunction={BlendFunction.SCREEN} /> */}
         <DepthOfField focusDistance={2} focalLength={0.1} bokehScale={0.6} />
-        <Bloom mipmapBlur luminanceThreshold={1.4} levels={8} intensity={0.7} />
-      </EffectComposer> */}
+        <Bloom
+          mipmapBlur
+          luminanceThreshold={1.4}
+          luminanceSmoothing={0.025}
+          levels={8}
+          intensity={0.7}
+        />
+        <SMAA />
+      </EffectComposer>
       <PerspectiveCamera
         makeDefault
         position={Object?.values(camSettings?.position)}
@@ -144,25 +203,32 @@ const Scene = ({ setThreeContext }) => {
       ) : null}
       <hemisphereLight
         position={[5, -2, 4]}
-        intensity={1.2}
-        skyColor={"#ffffbb"}
+        intensity={roomSetting?.time_of_day?.value === "night" ? 0.1 : 1}
+        skyColor={
+          roomSetting?.time_of_day?.value === "morning"
+            ? "#ffffff"
+            : roomSetting?.time_of_day?.value === "afternoon"
+            ? "#ffffff"
+            : lightSettings?.night?.color
+        }
         groundColor={"#080820"}
         castShadow
       />
-      <spotLight
-        color={"#dcccb5"}
-        intensity={1}
-        position={[-0.5, -0.15, 0.7]}
-        castShadow
-        angle={7.3}
-        shadow-normalBias={0.05}
-      />
+      {roomSetting?.time_of_day?.value !== "night" ? (
+        <ambientLight
+          position={[5, -2, 4]}
+          intensity={0.3}
+          color={"#ffffff"}
+          castShadow
+        />
+      ) : null}
       <directionalLight
-        position={[-54.7, 20.5, 6.55]}
-        shadow-normalBias={0.05}
+        position={Object?.values(lightSettings?.morning?.position)}
+        shadow-normalBias={0.09}
         castShadow
-        color={"#dcccb5"}
-        intensity={2.9}
+        color={lightSettings?.morning?.color}
+        intensity={5}
+        ref={dLightRef}
       />
       <RoomModel position={[0, 0, 0.28]} showAnnotation={showAnnotation} />
       {roomSetting?.layout?.value === "dining" ? (
