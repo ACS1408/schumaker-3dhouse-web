@@ -169,6 +169,7 @@ const Scene = ({ setThreeContext }) => {
             "<"
           );
     dLightRef.current.updateMatrixWorld();
+    scene.updateMatrixWorld();
   }, [roomSetting]);
 
   return (

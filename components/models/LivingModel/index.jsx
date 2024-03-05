@@ -293,6 +293,8 @@ export const LivingModel = ({ showAnnotation, ...props }) => {
                 power={10}
                 decay={1}
                 color="#dabd47"
+                castShadow
+                shadow-normalBias={0.09}
               />
               <meshStandardMaterial
                 color={"black"}

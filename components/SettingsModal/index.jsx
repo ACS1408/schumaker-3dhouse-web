@@ -3,15 +3,13 @@ import ModalContainer from "../ModalContainer";
 import OptionsToggler from "../OptionsToggler";
 import { useRecoilState } from "recoil";
 import roomSettingState from "@/atoms/roomSettingState";
+import lampState from "@/atoms/lampState";
 
 const SettingsModal = ({ closeSettingsModal, show }) => {
   const [roomSetting, setRoomSettings] = useRecoilState(roomSettingState);
+  const [lampSetting, setLampSettings] = useRecoilState(lampState);
   return (
-    <ModalContainer
-      title="Settings"
-      show={show}
-      onClose={closeSettingsModal}
-    >
+    <ModalContainer title="Settings" show={show} onClose={closeSettingsModal}>
       <OptionsToggler
         title="Room"
         options={[
@@ -46,9 +44,18 @@ const SettingsModal = ({ closeSettingsModal, show }) => {
           { icon: true, label: "/icons/icon-evening.svg", value: "night" },
         ]}
         selectedOption={roomSetting?.time_of_day}
-        onChange={(e) =>
-          setRoomSettings((prevState) => ({ ...prevState, time_of_day: e }))
-        }
+        onChange={(e) => {
+          setRoomSettings((prevState) => ({ ...prevState, time_of_day: e }));
+          e?.value === "morning"
+            ? setLampSettings({
+                lamp_living: false,
+                lamp_dining: false,
+              })
+            : setLampSettings({
+                lamp_living: true,
+                lamp_dining: true,
+              });
+        }}
       />
     </ModalContainer>
   );

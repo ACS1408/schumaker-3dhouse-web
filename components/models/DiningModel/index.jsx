@@ -135,7 +135,13 @@ export const DiningModel = ({ showAnnotation, ...props }) => {
               toneMapped={currentTexture?.lamp_dining ? true : ""}
             />
             {lampToggle?.lamp_dining ? (
-              <pointLight position={[0, 0, 0]} intensity={1} color="#fff" />
+              <pointLight
+                position={[0, 0, 0]}
+                intensity={0.3}
+                color="#fff"
+                castShadow
+                shadow-normalBias={0.09}
+              />
             ) : null}
             <Html position={[0, 0, 0]}>
               <TitleTooltip title="TURN LAMP ON/OFF" orientation="top">
