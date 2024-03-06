@@ -60,7 +60,8 @@ const HomeRoomWidget = () => {
         // frameloop="demand"
         onCreated={() => handleLoadedCanvas()}
       >
-        <Suspense fallback={<LoadingScreen />}>
+        <Suspense fallback={null}>
+          {!isCanvasCreated ? <LoadingScreen /> : null}
           <Scene setThreeContext={setThreeContext} />
         </Suspense>
       </Canvas>
