@@ -5,7 +5,7 @@ import { DiningModel } from "@/components/models/DiningModel";
 import { LivingModel } from "@/components/models/LivingModel";
 import { useRecoilState } from "recoil";
 import roomSettingState from "@/atoms/roomSettingState";
-import { useThree } from "@react-three/fiber";
+import { useFrame, useThree } from "@react-three/fiber";
 import gsap from "gsap/all";
 import cameraState from "@/atoms/cameraState";
 import { cameraPositions } from "@/data/cameraPositions";
@@ -15,12 +15,9 @@ import {
   Bloom,
   DepthOfField,
   EffectComposer,
-  // Noise,
   SMAA,
 } from "@react-three/postprocessing";
 import { lightSettings } from "@/data/lightSettings";
-// import { BlendFunction } from "postprocessing";
-// import { useControls } from "leva";
 
 const Scene = ({ setThreeContext }) => {
   const { gl, scene, camera } = useThree();
@@ -54,34 +51,21 @@ const Scene = ({ setThreeContext }) => {
     setThreeContext({ gl, scene, camera });
   }, [gl, scene, camera]);
 
-  // const { posX, posY, posZ, intensity } = useControls({
-  //   posX: {
-  //     value: -62.0,
-  //     min: -100,
-  //     max: 100,
-  //     step: 0.05,
-  //   },
-  //   posY: {
-  //     value: 6.3,
-  //     min: -100,
-  //     max: 100,
-  //     step: 0.05,
-  //   },
-  //   posZ: {
-  //     value: 32.6,
-  //     min: -100,
-  //     max: 100,
-  //     step: 0.05,
-  //   },
-  //   intensity: {
-  //     value: 10,
-  //     min: 0,
-  //     max: 10,
-  //     step: 0.05,
-  //   },
-  // });
-
   useEffect(() => {
+    if (
+      !modalOpen.wall &&
+      !modalOpen.rug &&
+      !modalOpen.curtain &&
+      !modalOpen.upholstery
+    ) {
+      setIsOrbitControlEnabled(true);
+      setCamSettings({ ...cameraPositions.default });
+    } else {
+      setIsOrbitControlEnabled(false);
+    }
+  }, [modalOpen]);
+
+  useFrame(() => {
     const tl = gsap.timeline();
     tl.to(camera.position, {
       ...camSettings?.position,
@@ -106,23 +90,9 @@ const Scene = ({ setThreeContext }) => {
         },
         "<"
       );
-  }, [camSettings]);
+  });
 
-  useEffect(() => {
-    if (
-      !modalOpen.wall &&
-      !modalOpen.rug &&
-      !modalOpen.curtain &&
-      !modalOpen.upholstery
-    ) {
-      setIsOrbitControlEnabled(true);
-      setCamSettings({ ...cameraPositions.default });
-    } else {
-      setIsOrbitControlEnabled(false);
-    }
-  }, [modalOpen]);
-
-  useEffect(() => {
+  useFrame(() => {
     const morningColor = new THREE.Color(lightSettings.morning.color);
     const afternoonColor = new THREE.Color(lightSettings.afternoon.color);
     const nightColor = new THREE.Color(lightSettings.night.color);
@@ -169,13 +139,12 @@ const Scene = ({ setThreeContext }) => {
             "<"
           );
     dLightRef.current.updateMatrixWorld();
-  }, [roomSetting]);
+  }, []);
 
   return (
     <>
       <StatsGl />
       <EffectComposer>
-        {/* <Noise premultiply blendFunction={BlendFunction.SCREEN} /> */}
         <DepthOfField focusDistance={2} focalLength={0.1} bokehScale={0.6} />
         <Bloom
           mipmapBlur

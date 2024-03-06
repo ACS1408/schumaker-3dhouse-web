@@ -2,7 +2,7 @@ import React from "react";
 import { useGLTF } from "@react-three/drei";
 import { Html } from "@react-three/drei";
 import TitleTooltip from "@/components/TitleTooltip";
-import { useLoader, useThree } from "@react-three/fiber";
+import { useLoader } from "@react-three/fiber";
 import { TextureLoader } from "three";
 import { useRecoilState } from "recoil";
 import textureState from "@/atoms/textureStates";

@@ -42,10 +42,9 @@ const HomeRoomWidget = () => {
       </div>
       <Canvas
         shadows
-        colorManagement
         className="!fixed inset-0 !w-full !h-[100svh] z-[0]"
         gl={{ preserveDrawingBuffer: true }}
-        frameloop="demand"
+        // frameloop="demand"
       >
         <Suspense fallback={null}>
           <Scene setThreeContext={setThreeContext} />
