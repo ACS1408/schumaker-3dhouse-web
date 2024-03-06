@@ -1,4 +1,9 @@
 export const cameraPositions = {
+  initial: {
+    position: { x: 0.2, y: 0, z: -0.2 },
+    rotation: { x: 0, y: 1.8, z: 0 },
+    fov: 50,
+  },
   default: {
     position: { x: 1.2, y: 0, z: -0.1 },
     rotation: { x: 0, y: 1.6, z: 0 },

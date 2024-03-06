@@ -26,9 +26,16 @@ const Scene = ({ setThreeContext }) => {
   const [modalOpen, setModalOpen] = useRecoilState(modalState);
   const orbitControlRef = useRef();
   const [camSettings, setCamSettings] = useRecoilState(cameraState);
+  const [isCameraAnimating, setIsCameraAnimating] = useState(false);
+  const [isLightAnimating, setIsLightAnimating] = useState(false);
   const [isOrbitControlEnabled, setIsOrbitControlEnabled] = useState(true);
   const [showAnnotation, setShowAnnotation] = useState(true);
+
   let timeoutId;
+
+  const morningColor = new THREE.Color(lightSettings.morning.color);
+  const afternoonColor = new THREE.Color(lightSettings.afternoon.color);
+  const nightColor = new THREE.Color(lightSettings.night.color);
 
   const handleMouseMove = () => {
     setShowAnnotation(true);
@@ -52,6 +59,10 @@ const Scene = ({ setThreeContext }) => {
   }, [gl, scene, camera]);
 
   useEffect(() => {
+    setCamSettings({ ...cameraPositions?.default });
+  }, []);
+
+  useEffect(() => {
     if (
       !modalOpen.wall &&
       !modalOpen.rug &&
@@ -65,14 +76,30 @@ const Scene = ({ setThreeContext }) => {
     }
   }, [modalOpen]);
 
+  useEffect(() => {
+    if (camSettings) {
+      setIsCameraAnimating(true);
+    }
+  }, [camSettings]);
+
+  useEffect(() => {
+    if (roomSetting?.time_of_day) {
+      setIsLightAnimating(true);
+    }
+  }, [roomSetting?.time_of_day]);
+
   useFrame(() => {
-    const tl = gsap.timeline();
-    tl.to(camera.position, {
-      ...camSettings?.position,
-      duration: 1,
-      ease: "expo.out",
-    })
-      .to(
+    if (isCameraAnimating) {
+      const tl = gsap.timeline({
+        onComplete: () => {
+          setIsCameraAnimating(false);
+        },
+      });
+      tl.to(camera.position, {
+        ...camSettings?.position,
+        duration: 1,
+        ease: "expo.out",
+      }).to(
         camera.rotation,
         {
           ...camSettings?.rotation,
@@ -80,66 +107,69 @@ const Scene = ({ setThreeContext }) => {
           ease: "expo.out",
         },
         "<"
-      )
-      .to(
-        camera,
-        {
-          fov: camSettings?.fov,
-          duration: 1,
-          ease: "expo.out",
-        },
-        "<"
       );
+      // .to(
+      //   camera,
+      //   {
+      //     fov: camSettings?.fov,
+      //     duration: 1,
+      //     ease: "expo.out",
+      //   },
+      //   "<"
+      // );
+    }
   });
 
   useFrame(() => {
-    const morningColor = new THREE.Color(lightSettings.morning.color);
-    const afternoonColor = new THREE.Color(lightSettings.afternoon.color);
-    const nightColor = new THREE.Color(lightSettings.night.color);
-    const tl = gsap.timeline();
-    roomSetting?.time_of_day?.value === "morning"
-      ? tl
-          .to(dLightRef?.current?.position, {
-            x: lightSettings?.morning?.position?.x,
-            duration: 1,
-          })
-          .to(
-            dLightRef?.current?.color,
-            {
-              ...morningColor,
+    if (isLightAnimating) {
+      const tl = gsap.timeline({
+        onComplete: () => {
+          setIsLightAnimating(false);
+        },
+      });
+      roomSetting?.time_of_day?.value === "morning"
+        ? tl
+            .to(dLightRef?.current?.position, {
+              x: lightSettings?.morning?.position?.x,
               duration: 1,
-            },
-            "<"
-          )
-      : roomSetting?.time_of_day?.value === "afternoon"
-      ? tl
-          .to(dLightRef?.current?.position, {
-            x: lightSettings?.afternoon?.position?.x,
-            duration: 1,
-          })
-          .to(
-            dLightRef?.current?.color,
-            {
-              ...afternoonColor,
+            })
+            .to(
+              dLightRef?.current?.color,
+              {
+                ...morningColor,
+                duration: 1,
+              },
+              "<"
+            )
+        : roomSetting?.time_of_day?.value === "afternoon"
+        ? tl
+            .to(dLightRef?.current?.position, {
+              x: lightSettings?.afternoon?.position?.x,
               duration: 1,
-            },
-            "<"
-          )
-      : tl
-          .to(dLightRef?.current?.position, {
-            x: lightSettings?.night?.position?.x,
-            duration: 1,
-          })
-          .to(
-            dLightRef?.current?.color,
-            {
-              ...nightColor,
+            })
+            .to(
+              dLightRef?.current?.color,
+              {
+                ...afternoonColor,
+                duration: 1,
+              },
+              "<"
+            )
+        : tl
+            .to(dLightRef?.current?.position, {
+              x: lightSettings?.night?.position?.x,
               duration: 1,
-            },
-            "<"
-          );
-    dLightRef.current.updateMatrixWorld();
-  }, []);
+            })
+            .to(
+              dLightRef?.current?.color,
+              {
+                ...nightColor,
+                duration: 1,
+              },
+              "<"
+            );
+    }
+  });
 
   return (
     <>
@@ -157,9 +187,9 @@ const Scene = ({ setThreeContext }) => {
       </EffectComposer>
       <PerspectiveCamera
         makeDefault
-        position={Object?.values(camSettings?.position)}
-        rotation={Object?.values(camSettings?.rotation)}
-        fov={camSettings?.fov}
+        position={Object?.values(cameraPositions?.initial?.position)}
+        rotation={Object?.values(cameraPositions?.initial?.rotation)}
+        fov={cameraPositions?.initial?.fov}
       />
       {isOrbitControlEnabled ? (
         <OrbitControls

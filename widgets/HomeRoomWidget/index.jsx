@@ -1,5 +1,5 @@
 "use client";
-import React, { Suspense } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import Image from "next/image";
 import FloatingControllerNav from "@/components/FloatingControllerNav";
 import { Canvas } from "@react-three/fiber";
@@ -12,6 +12,7 @@ import CurtainTexturesModal from "@/components/CurtainTexturesModal";
 import UpholsteryTexturesModal from "@/components/UpholsteryTexturesModal";
 import { useRecoilState } from "recoil";
 import modalState from "@/atoms/modalState";
+import LoadingScreen from "@/components/LoadingScreen";
 
 const HomeRoomWidget = () => {
   const {
@@ -29,9 +30,21 @@ const HomeRoomWidget = () => {
     closeUpholsteryTextureModal,
   } = useHomeRoomWidget();
   const [isModalOpen, setIsModalOpen] = useRecoilState(modalState);
+  const [isCanvasCreated, setIsCanvasCreated] = useState(false);
+
+  const handleLoadedCanvas = () => {
+    setTimeout(() => {
+      setIsCanvasCreated(true);
+    }, 500);
+  };
+
   return (
     <main className="home-room-widget w-full h-svh bg-black">
-      <div className="flex justify-center py-7 z-10 relative">
+      <div
+        className={`flex justify-center py-7 z-10 relative ${
+          isCanvasCreated ? "opacity-1" : "opacity-0"
+        }`}
+      >
         <Image
           src="/brand-logo.svg"
           width={190}
@@ -45,8 +58,9 @@ const HomeRoomWidget = () => {
         className="!fixed inset-0 !w-full !h-[100svh] z-[0]"
         gl={{ preserveDrawingBuffer: true }}
         // frameloop="demand"
+        onCreated={() => handleLoadedCanvas()}
       >
-        <Suspense fallback={null}>
+        <Suspense fallback={<LoadingScreen />}>
           <Scene setThreeContext={setThreeContext} />
         </Suspense>
       </Canvas>
@@ -75,14 +89,16 @@ const HomeRoomWidget = () => {
         openUpholsteryTextureModal={openUpholsteryTextureModal}
         closeUpholsteryTextureModal={closeUpholsteryTextureModal}
       />
-      <FloatingControllerNav
-        openSettingsModal={openSettingsModal}
-        openWallTextureModal={openWallTextureModal}
-        openRugTextureModal={openRugTextureModal}
-        openCurtainTextureModal={openCurtainTextureModal}
-        openUpholsteryTextureModal={openUpholsteryTextureModal}
-        takeSnapShot={takeSnapShot}
-      />
+      <div className={`${isCanvasCreated ? "opacity-1" : "opacity-0"}`}>
+        <FloatingControllerNav
+          openSettingsModal={openSettingsModal}
+          openWallTextureModal={openWallTextureModal}
+          openRugTextureModal={openRugTextureModal}
+          openCurtainTextureModal={openCurtainTextureModal}
+          openUpholsteryTextureModal={openUpholsteryTextureModal}
+          takeSnapShot={takeSnapShot}
+        />
+      </div>
     </main>
   );
 };

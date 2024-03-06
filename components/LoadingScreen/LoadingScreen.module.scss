@@ -1,0 +1,15 @@
+.progress_anim {
+    &::after {
+        transform: scaleX(0);
+        animation: progressAnim 3s ease 1 forwards;
+    }
+}
+
+@keyframes progressAnim {
+    0% {
+        transform: scaleX(0);
+    }
+    100% {
+        transform: scaleX(1);
+    }
+}
