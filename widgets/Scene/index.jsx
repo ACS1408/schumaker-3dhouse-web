@@ -143,7 +143,7 @@ const Scene = ({ setThreeContext }) => {
 
   return (
     <>
-      <StatsGl />
+      {/* <StatsGl /> */}
       <EffectComposer>
         <DepthOfField focusDistance={2} focalLength={0.1} bokehScale={0.6} />
         <Bloom
