@@ -6,7 +6,7 @@ import Image from "next/image";
 const LoadingScreen = () => {
   const classes = {
     loading_screen:
-      "fixed w-[100vw] h-svh top-0 left-0 -translate-x-1/2 -translate-y-1/2 z-50 bg-white flex flex-col justify-center items-center",
+      "fixed w-[100vw] h-svh top-0 left-0 z-50 bg-white flex flex-col justify-center items-center",
     loading_content: "text-center z-[2] text-white",
     loading_image: "absolute size-full blur-[14px] brightness-[0.6]",
     loading_text: {
@@ -23,7 +23,7 @@ const LoadingScreen = () => {
     },
   };
   return (
-    <Html>
+    // <Html>
       <div className={classes.loading_screen}>
         <figure className={classes.loading_image}>
           <Image
@@ -48,7 +48,7 @@ const LoadingScreen = () => {
           />
         </div>
       </div>
-    </Html>
+    // </Html>
   );
 };
 

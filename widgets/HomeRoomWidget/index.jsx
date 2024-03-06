@@ -53,14 +53,14 @@ const HomeRoomWidget = () => {
           alt="schumacher-logo"
         />
       </div>
+      {!isCanvasCreated ? <LoadingScreen /> : null}
       <Canvas
         shadows
         className="!fixed inset-0 !w-full !h-[100svh] z-[0]"
         gl={{ preserveDrawingBuffer: true }}
         // frameloop="demand"
-        onCreated={() => handleLoadedCanvas()}
+        onCreated={handleLoadedCanvas}
       >
-        {!isCanvasCreated ? <LoadingScreen /> : null}
         <Suspense fallback={null}>
           <Scene setThreeContext={setThreeContext} />
         </Suspense>
